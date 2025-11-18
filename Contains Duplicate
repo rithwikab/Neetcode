@@ -1,0 +1,13 @@
+class Solution {
+    public boolean hasDuplicate(int[] nums) {
+        Set bag = new HashSet();
+        for(int i:nums){
+            if(bag.contains(i)){
+                return true;
+            }
+            bag.add(i);
+        
+        }
+        return false;
+    }
+}
