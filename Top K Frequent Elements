@@ -1,0 +1,73 @@
+/* HashMap,copying to array , sorting array in descending order 0(mlogm)time O(n+m+k)=O(n) space
+public class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+
+        List<int[]> arr = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            arr.add(new int[] {entry.getValue(), entry.getKey()});
+        }
+        arr.sort((a, b) -> b[0] - a[0]);
+
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = arr.get(i)[1];
+        }
+        return res;
+    }
+}
+*/
+/* Instead of using an Array and sorting it , use prioirty queue sorted in ascending order and pop out elements as soon as heap size exceeds k elements O(nlogk) time O(n+k) space
+public class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[0]-b[0]);
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            pq.offer(new int[] {entry.getValue(), entry.getKey()});
+            if(pq.size()>k) pq.poll();
+        }
+        
+
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = pq.poll()[1];
+        }
+        return res;
+    }
+}
+*/
+/* Using bucket sort , the bucket contains the frequencies ranging from 0 to length of the given array , for each of those frequencies a bucket of elements with those frequencies are stored , we reetrieve the top k such elements by traversing the frequencies array
+time is O(n) to make map,bucket array and to traverse through the buckets(max k), space complexity is o(n)*/
+public class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+        List<Integer>[] bucket = new List[nums.length+1];
+        for(int i=0;i<nums.length+1;i++){
+            bucket[i]=new ArrayList<Integer>();
+        }
+        for(Map.Entry<Integer,Integer> e:count.entrySet())
+        {
+            bucket[e.getValue()].add(e.getKey());
+        }
+       
+        int[] res = new int[k];
+        int id = 0;
+        for (int i = nums.length; i >= 0 && id<k; i--) {
+            for(int n:bucket[i]){
+                res[id++]=n;
+                if(id==k) return res;
+            }
+        }
+        return res;
+    }
+}
