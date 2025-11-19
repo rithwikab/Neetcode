@@ -1,0 +1,57 @@
+/* Using 3 different hashsets for row,col,square and storing values at each cell into the respective row,col,square hashsets, if at any point , the hashset already contains the value , return false */
+/* time complexity O(n^2)-two for loops , space complexity O(3*n^2)=O(n^2) */
+/*
+public class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Map<Integer, Set<Character>> cols = new HashMap<>();
+        Map<Integer, Set<Character>> rows = new HashMap<>();
+        Map<String, Set<Character>> squares = new HashMap<>();
+
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] == '.') continue;
+
+                String squareKey = (r / 3) + "," + (c / 3);
+
+                if (rows.computeIfAbsent(r, k -> new HashSet<>()).contains(board[r][c]) ||
+                    cols.computeIfAbsent(c, k -> new HashSet<>()).contains(board[r][c]) ||
+                    squares.computeIfAbsent(squareKey, k -> new HashSet<>()).contains(board[r][c])) {
+                    return false;
+                }
+
+                rows.get(r).add(board[r][c]);
+                cols.get(c).add(board[r][c]);
+                squares.get(squareKey).add(board[r][c]);
+            }
+        }
+        return true;
+    }
+}
+*/
+/* To reduce the space complexity to O(n) we can use bit manipulation */
+/* use 3 arrays of size 9 indexed 0 to 8 , for row , col , sqr 
+the number of 1s in bitwise representation of each entry of row,col,sqr array indicate which digit already occured in that specific row,col,sqr
+*/
+/* time complexity o(n^2) space complexity o(3*n)=o(n)*/
+public class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        int[] rows=new int[9];
+        int[] cols=new int[9];
+        int[] sqr=new int[9];
+        for(int r=0;r<9;r++){
+            for(int c=0;c<9;c++){
+                if(board[r][c] == '.')continue;
+                int val = board[r][c]-'1';
+                if((rows[r] & (1<<val))>0 || 
+                (cols[c] & (1<<val))>0 || 
+                (sqr[(r/3)*3 + (c/3)] & (1<<val)) > 0 ){
+                    return false;
+                }
+                rows[r] |= (1<<val);
+                cols[c] |= (1<<val);
+                sqr[(r/3)*3+(c/3)] |= (1<<val);
+            }
+        }
+        return true;
+    }
+}
