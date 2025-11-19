@@ -1,0 +1,30 @@
+/* Use stringbuilder to keep appending strings , use delimiter for decoding , to distinguish delimiter symbol from symbol in string , use length of string before delimiter in encoded string*/
+/* m is sum of lengths of all string , n is number of strings , time complexity of encode and decode are O(m) , space complexity of encode and decode are O(m+n) as we are adding delimiter+size per each string(n)*/
+class Solution {
+
+    public String encode(List<String> strs) {
+        StringBuilder sb = new StringBuilder();
+        for(String s: strs){
+            sb.append(s.length()).append("#").append(s);
+        }
+        return sb.toString();
+    }
+
+    public List<String> decode(String str) {
+        List<String> ans = new ArrayList();
+        int i=0;//string iterate
+        while(i<str.length()){
+            int j=i;//iterate till delimiter to get string length
+            while(str.charAt(j)!='#')
+            {
+                j++;
+            }
+            int length=Integer.parseInt(str.substring(i,j));
+            i=j+1;
+            j=i+length;
+            ans.add(str.substring(i,j));
+            i=j;
+        }
+        return ans;
+    }
+}
