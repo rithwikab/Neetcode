@@ -1,0 +1,21 @@
+/* O(n) time and O(n) space */
+/* Pattern: Prefix + suffix accumulation (compute contributions from left and right without division).*/
+//Use this pattern when you need, for every index, a result that depends on all elements except the current one, and you want to avoid nested loops or division by reusing prefix and suffix accumulations.
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n=nums.length;
+        int[] pre=new int[n];//stores prefix product excluding nums[i]
+        int[] suf=new int[n];//stores suffix product excluding nums[i]
+        int[] ans=new int[n];
+        pre[0]=1;//there's no product prefix for first element
+        suf[n-1]=1;//there's no product suffix for last element
+        for(int i=1;i<n;i++){
+            pre[i]=pre[i-1]*nums[i-1];
+            suf[n-i-1]=suf[n-i]*nums[n-i];
+        }
+        for(int i=0;i<n;i++){
+            ans[i]=pre[i]*suf[i];
+        }
+        return ans;
+    }
+}  
