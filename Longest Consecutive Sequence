@@ -1,0 +1,27 @@
+/* time complexity - O(n) space complexity - O(n)
+add elements into set , for each element of the set , assume its the starting number of longest consecutive sequece (use if to check if previous number exists in set)
+count until consecutive elements are present in set , update the ans with max of such counts for each element in set */
+/* Use Hashset as lookup is o(1) instead of arraylist with contains() time o(n) */
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        int n = nums.length;
+        if(n==0 || n==1)return n;
+        int ans=0;
+        Set<Integer> s=new HashSet();
+        for(int i:nums){
+            s.add(i);
+        }
+        for(int i:s){
+            if(!s.contains(i-1)){
+                int count =1;
+                while(s.contains(i+1)){
+                    i++;
+                    count++;
+                }
+                ans=Math.max(ans,count);
+            }
+        }
+        return ans;
+    }
+}
