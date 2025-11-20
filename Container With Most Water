@@ -1,0 +1,27 @@
+/* O(n) time O(1) space
+Intuition - first figure out how to calculate volume of water between two walls - it is limited by min of wall heights
+Pattern - find a particular target value or max value based on two values of array or list in O(n) time -> suggests two pointer 
+If two pointer , when to move pointer -> goal is to traverse as less as possible -> so keep removing limiting factor -> move only from lower height
+In cases where heights are same , the movement direction doesn't matter */
+
+
+class Solution {
+    public int maxArea(int[] heights) {
+        int ans=Integer.MIN_VALUE;
+        int l=0,r=heights.length-1;
+        while(l<r){
+            int v = vol(heights,l,r);
+            ans=Math.max(ans,v);
+            if(heights[l]<heights[r]){
+                l++;
+            }
+            else {
+                r--;
+            }
+        }
+        return ans;
+    }
+    public int vol(int[] heights,int l,int r){
+        return (r-l)*Math.min(heights[l],heights[r]);
+    }
+}
