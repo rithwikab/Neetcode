@@ -1,0 +1,47 @@
+/*
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int n = s.length();
+        int l=0;int r=0;
+        int maxlength = 0;
+        Set<Character> set = new HashSet();
+        while(r<n){
+            if(!set.contains(s.charAt(r))){
+                set.add(s.charAt(r));
+                r++;
+                maxlength = Math.max(maxlength,set.size());
+            }
+            else{
+                l++;
+                r=l+1;
+                set.clear();
+                set.add(s.charAt(l));
+
+            }
+            
+            
+        }
+        return maxlength;
+    }
+}
+
+*/
+/*You slide a window over the string and expand it to the right.
+If a character repeats inside the window, you jump the left pointer to just after the previous occurrence, ensuring the window always stays valid (no duplicates).
+Store each character’s latest index so you can instantly know where to jump. */
+/* o(n) time o(m) space n-length of string m-number of unique characters of each substring*/
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character,Integer> m = new HashMap();
+        int l=0, maxLength=0;
+        for(int r=0;r<s.length();r++){
+            if(m.containsKey(s.charAt(r))){
+                l = Math.max(m.get(s.charAt(r))+1,l);
+            }
+            m.put(s.charAt(r),r);
+            maxLength = Math.max(maxLength,r-l+1);
+        }
+        return maxLength;
+    }
+}
+
