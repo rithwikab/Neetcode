@@ -1,0 +1,25 @@
+/* O(n) time and o(1) space */
+class Solution {
+    public int maxProfit(int[] prices) {
+        /* intuition - sliding window 
+        given current price -> do I yield a profit if I sell next day
+        if yes , sell and update profit
+        check if one can make more profit in next days, stop if no profit can be made
+        if no , it means the next price is even lower
+        so thats the new min price
+        repeat process until the array ends */
+
+        int l=0;int r=1;
+        int profit = 0;
+        while(r<prices.length){
+            if(prices[l]<prices[r]){
+                profit = Math.max(profit,prices[r]-prices[l]);
+            }
+            else{
+                l=r;
+            }
+            r++;
+        }
+        return profit;
+    }
+}
