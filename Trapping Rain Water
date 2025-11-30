@@ -7,6 +7,7 @@
         so we need to find the max height from left and max height from right 
         the formula for water stored at each point is max(l,r)-h[i] */
 /*
+/*
 class Solution {
     public int trap(int[] height) {
         int n = height.length;
@@ -29,6 +30,43 @@ class Solution {
     }
 }
 */
+/* O(n) time and o(1) space */
+class Solution {
+    public int trap(int[] height) {
+        /*take two pointers L and R and go on till L<R
+        we need to calculate the min of max L and max R
+        to calculate min we dont need to wait till we find 
+        if current L and R are max , the min of the current 
+        L and R would give the same result 
+        how to move the pointer -> less traversing is key 
+        if we already know the min of L,R at a point 
+        we know the limiting factor so we can move the min value
+        if we move the max pointer , then we might find a pointer with 
+        more height -> in this case the min of L,R remains same
+        less height -> it would just be submerged in the water*/
+       int n=height.length;
+       int leftMax=height[0];
+       int rightMax=height[n-1];
+       int l=0,r=n-1;
+       int sum=0;
+       while(l<r){
+            
+            if(leftMax < rightMax ){
+                sum+=leftMax - height[l];
+                l++;
+                leftMax = Math.max(leftMax,height[l]);
+            }
+            else{
+                sum+=rightMax-height[r];
+                r--;
+                rightMax=Math.max(rightMax,height[r]);
+            }
+       }
+       return sum;
+
+    }
+}
+
+*/
 /*optimised solution using two pointers to find max left and max right */
-/* o(n) time and o(1) space*/
 
