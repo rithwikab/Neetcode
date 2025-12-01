@@ -1,0 +1,46 @@
+/* o(n) time and o(1) space */
+/* intuition 
+Create a mapping from closing brackets to their corresponding opening brackets
+(]→[, }→{, )→().
+
+Use a stack to keep track of opening brackets that need matching.
+
+Iterate through each character in the string:
+
+If the character is an opening bracket, push it onto the stack.
+
+If it is a closing bracket:
+
+Check if the stack is not empty AND
+the top element matches the required opening bracket for this closing one.
+
+If it matches → pop the stack.
+
+If it doesn’t match → invalid string, return false immediately.
+
+After processing the entire string, the string is valid only if the stack is empty
+(meaning all openings were matched and closed correctly).
+
+*/
+class Solution {
+    public boolean isValid(String s) {
+        Map<Character,Character> m = new HashMap();
+        m.put(']','[');
+        m.put('}','{');
+        m.put(')','(');
+        Stack<Character> st = new Stack();
+        for(int i=0;i<s.length();i++){
+            char c = s.charAt(i);
+            if(m.containsValue(c)){
+                st.push(c);
+            }
+            else{
+                if(!st.isEmpty() && st.peek()==m.get(c)){
+                    st.pop();
+                }
+                else return false;
+            }
+        }
+        return st.isEmpty();
+    }
+}
