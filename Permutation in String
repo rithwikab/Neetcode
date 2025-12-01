@@ -1,0 +1,56 @@
+/* time o(n) space o(1)
+intuition 
+Count frequencies of s1 in an array c1[26].
+
+Initialize a window in s2 of length s1.length() and count its frequencies in c2[26].
+
+Compute “matches” = how many characters have equal frequency in both arrays (c1[i] == c2[i]).
+
+If all 26 characters match, the first window is already a permutation → return true.
+
+Slide the window one step at a time through s2:
+
+Add the next character entering the window (right side).
+
+Update matches for that character (it may start or stop matching).
+
+Remove the character leaving the window (left side).
+
+Update matches for that character as well.
+
+After each slide, if matches == 26, the current window is a perfect frequency match → permutation found.
+
+If you finish sliding and never reach 26 matches → return false. */
+
+
+
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        if(s1.length()>s2.length())return false;
+        int[] c1 = new int[26];
+        int[] c2 = new int[26];
+        for(int i=0;i<s1.length();i++){
+            c1[s1.charAt(i)-'a']++;
+            c2[s2.charAt(i)-'a']++;
+        }
+        int matches = 0;
+        for(int i=0;i<26;i++){
+            if(c1[i]==c2[i])matches++;
+        }
+        int l=0;
+        for(int r=s1.length();r<s2.length();r++){
+            if(matches==26)return true;
+            int val = s2.charAt(r)-'a';
+            c2[val]++;
+            if(c1[val]==c2[val])matches++;
+            else if(c1[val] + 1 == c2[val])matches--;
+
+            val = s2.charAt(l)-'a';
+            c2[val]--;
+            if(c1[val]==c2[val])matches++;
+            else if(c1[val]-1==c2[val])matches--;
+            l++;
+        }
+        return (matches == 26);
+    }
+}
