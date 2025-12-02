@@ -1,0 +1,82 @@
+/* Core Pattern - You try to expand to include all required characters,
+and shrink to eliminate extra characters
+— always maintaining the smallest window that satisfies all character requirements.
+*/
+
+/* o(k) space -> for maps , k -> number of unique characters of strings
+o(n+k) time n-> length of string s
+Build a frequency map (tmap) for string t showing how many of each character you need.
+
+Use another map (smap) to count characters inside the current window in s.
+
+Maintain matches = number of characters whose frequency requirement is fully satisfied
+(i.e., smap[c] == tmap[c]).
+
+Expand the window by moving the right pointer (r):
+
+Add the new character to smap.
+
+If its required count is now fully met, increment matches.
+
+When matches == tmap.size(), your current window contains all needed characters in correct quantities → it is a valid window.
+
+Inside this valid window, shrink it from the left pointer (l) to find the smallest possible window:
+
+Update the minimum window length and store its boundaries.
+
+Remove the left character from smap.
+
+If removing it causes its frequency to drop below what t needs, decrease matches (window becomes invalid).
+
+Move l forward.
+
+Continue sliding until the end of s.
+
+If no valid window was ever found, return ""; otherwise return the smallest window stored.
+*/
+
+
+
+class Solution {
+    public String minWindow(String s, String t) {
+        if(t.length()>s.length()) return "";
+        Map<Character,Integer> tmap = new HashMap();
+        Map<Character,Integer> smap = new HashMap();
+        int matches =0;
+        int minlength = Integer.MAX_VALUE;
+        int[] indices = {-1, -1};
+        for(int i=0;i<t.length();i++){
+            tmap.put(t.charAt(i),
+            tmap.getOrDefault(t.charAt(i),0)+1);
+        }
+        int l=0;
+        for(int r=0;r<s.length();r++){
+            char cur = s.charAt(r);
+            smap.put(cur,smap.getOrDefault(cur,0)+1);
+            if(tmap.containsKey(cur) && tmap.get(cur)==smap.get(cur)){
+                matches++;
+            }
+            while(matches==tmap.size()){
+                //valid window
+                int curlength = r-l+1;
+                if(curlength < minlength){
+                    minlength = curlength;
+                    indices[0]=l;
+                    indices[1]=r;
+                }
+                char left = s.charAt(l);
+                smap.put(left,smap.get(left)-1);
+                if(tmap.containsKey(left) && smap.get(left) < tmap.get(left)){
+                    // the current window holds less of char left than required
+                    //because the window was previously valid , the count shoud've been an exact match
+                    // but it's not , so decrement matches
+                    // only less than works , != , > dont work as if it was greater than it was never one of the matches
+                    matches--;
+                }
+                l++;
+            }
+        }
+        if(minlength == Integer.MAX_VALUE) return "";
+        else return s.substring(indices[0],indices[1]+1);
+    }
+}
