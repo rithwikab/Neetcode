@@ -1,0 +1,56 @@
+/* O(n) space and O(1) time */
+/* intuition
+Use a normal stack (st) to store all pushed values normally.
+
+Use a second stack (min) to keep track of the minimum value so far at every point in time.
+
+When pushing a value:
+
+Push it to the main stack.
+
+If the min stack is empty or the new value is <= current minimum, push it onto the min stack too.
+
+When popping:
+
+Pop from the main stack.
+
+If the popped value equals the top of the min stack, also pop from the min stack
+(because that min is now gone).
+
+getMin() simply returns the top of the min stack — always the current minimum in O(1).
+
+top() returns the top of the main stack.
+*/
+
+
+class MinStack {
+    private Stack<Integer> st;
+    private Stack<Integer> min;
+    public MinStack() {
+        st = new Stack();
+        min = new Stack();
+    }
+    
+    public void push(int val) {
+        st.push(val);
+        if(min.isEmpty() || val<= min.peek()){
+            min.push(val);
+        }
+    }
+    
+    public void pop() {
+        int val = st.peek();
+        st.pop();
+        if(val == min.peek()){
+            min.pop();
+        }
+    }
+    
+    public int top() {
+        return st.peek();
+    }
+    
+    public int getMin() {
+        return min.peek();
+    }
+}
