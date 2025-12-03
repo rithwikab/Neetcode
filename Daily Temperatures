@@ -1,0 +1,47 @@
+/*
+Time complexity - O(n) - each index is pushed one and popped once
+Space complexity - O(n) - worst case - all elements are decreasing and have to be stored on stack 
+INTUITION
+Use a stack to store indexes of days whose next warmer day has not been found yet.
+The stack will maintain temperatures in monotonically decreasing order.
+
+Iterate through each day (i):
+
+While the stack is not empty and the current temperature is warmer than the temperature at the top index:
+
+This means we found the next warmer day for the top index.
+
+Pop that index from the stack.
+
+The number of days to wait = i - poppedIndex, store this in ans[poppedIndex].
+
+Push the current index i onto the stack (because its warmer day is still unknown).
+
+After the loop ends, any remaining indexes in the stack have no warmer future day, so set their answers to 0.
+
+Return the ans array.
+
+*/
+
+
+
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] ans = new int[n];
+        Stack<Integer> id = new Stack();
+        for(int i=0;i<n;i++){
+            while(!id.isEmpty() && temperatures[id.peek()]<temperatures[i]){
+                int ansid = id.pop();
+                ans[ansid]=i-ansid;
+            }
+            id.push(i);
+            
+        }
+        while(!id.isEmpty()){
+            int ansid = id.pop();
+            ans[ansid]=0;
+        }
+        return ans;
+    }
+}
