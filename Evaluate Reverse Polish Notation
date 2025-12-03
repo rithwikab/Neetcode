@@ -1,0 +1,51 @@
+/* time complexity - O(n)
+    Space complexity - O(n)
+INTUITION 
+Use a stack to store numbers as you process the tokens from left to right.
+
+For each token:
+
+If it is a number, convert it to integer and push onto the stack.
+
+If it is an operator (+, -, *, /), pop the top two numbers from the stack:
+
+The first popped element = right operand
+
+The second popped element = left operand
+
+Apply the operator to left op right, then push the result back onto the stack.
+
+Continue until all tokens are processed.
+
+After processing all tokens, the stack will contain exactly one number, which is the final result.
+
+*/
+
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> st = new Stack();
+        Set<String> s = new HashSet();
+        s.add("+");
+        s.add("-");
+        s.add("*");
+        s.add("/");
+        for(int i=0;i<tokens.length;i++){
+            if(!s.contains(tokens[i])){
+                st.push(Integer.parseInt(tokens[i]));
+            }
+            else{
+                int r = st.pop();
+                System.out.println(r);
+                int l = st.pop();
+                System.out.println(l);
+                if(tokens[i].equals("+")) st.push(l+r);
+                else if(tokens[i].equals("-")) st.push(l-r);
+                else if(tokens[i].equals("*")) st.push(l*r);
+                else st.push(l/r);
+            }
+            System.out.println(st);
+        }
+        int ans = st.pop();
+        return ans;
+    }
+}
