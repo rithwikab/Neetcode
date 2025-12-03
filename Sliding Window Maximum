@@ -1,0 +1,60 @@
+/*
+time complexity - O(n)
+space complexity - O(n)
+INTUITION
+Use a deque to store indexes of elements in decreasing order of their values.
+The front of the deque will always represent the maximum of the current window.
+
+As you move the right pointer (r):
+
+Remove elements from the back of the deque if they are smaller than the current number, because they can never be part of the maximum again.
+
+Add the current index to the back.
+
+Ensure the deque only contains indexes inside the current window:
+
+If the left pointer (l) crosses the index at the front of the deque, remove it from the front.
+
+Once a full window is formed (r ≥ k − 1):
+
+The element at nums[deque.front] is the maximum of that window.
+
+Store it in the result.
+
+Then move the left pointer (l).
+
+Continue sliding the window until reaching the end of nums.
+
+*/
+
+
+
+
+
+
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        Deque<Integer> d = new ArrayDeque();
+        int[] ans = new int[nums.length - k+1 ];
+        //store indexes rather than numbers to avoid conflict incase of duplicates
+        int l=0,r=0;
+        while(r<nums.length){
+            while(!d.isEmpty() && nums[d.getLast()]<nums[r]){
+                d.pollLast();
+            }
+            d.offerLast(r);
+            if(l>d.getFirst())//check if current window l occurs after the max element in the deque
+            {
+                d.pollFirst();
+            }
+            if(r+1 >=k )//start recording ans when one full window is processed i.e r >=k-1
+            {
+                ans[l]=nums[d.getFirst()];
+                l++;
+            }
+            
+            r++;
+        }
+        return ans;
+    }
+}
