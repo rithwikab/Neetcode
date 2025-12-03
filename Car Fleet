@@ -1,0 +1,53 @@
+/*
+time - o(nlogn) - sorting pq
+space - o(n)
+intuition
+1.Find how long each car needs to reach the target.
+
+Cars with large (target - position) or small speed take longer.
+This time tells you which cars can catch up.
+
+2. Put all cars into a priority queue sorted by position.
+
+This ensures you process cars from closest to the target → farthest.
+You always want to check if a car behind can catch the car in front.
+
+3. Start popping cars one by one (from closest forward).
+
+Each popped car gives you the time it will take to reach the target.
+
+4. Use a stack to keep track of “fleets” by time.
+
+If the current car takes less time, it forms a new fleet → push
+
+If it takes equal/more time, it catches the fleet ahead → pop that fleet
+
+This works because a slower/late-arriving car gets stuck behind the fleet in front.
+
+5. Final number of fleet times in the stack = number of car fleets.
+
+*/
+
+
+
+
+class Solution {
+    public int carFleet(int target, int[] position, int[] speed) {
+        PriorityQueue<float[]> pq = new PriorityQueue<>((a,b)->Float.compare(a[0],b[0]));
+        Stack<Float> times = new Stack();
+        int n = position.length;
+        for(int i=0;i<n;i++){
+            float t = (float)(target - position[i])/speed[i];
+            pq.add(new float[]{position[i],t});
+        }
+        while(!pq.isEmpty()){
+            float cur = pq.poll()[1];
+            while(!times.isEmpty() && times.peek()<=cur){
+                times.pop();
+            }
+            times.push(cur);
+        }
+        return times.size();
+
+    }
+}
