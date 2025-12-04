@@ -1,0 +1,50 @@
+/*
+time complexity - O(logn)
+space complexity - O(1)
+INTUITION
+Key observations:
+
+A rotated sorted array is made of two sorted segments.
+
+The minimum element is the pivot—the point where rotation happened.
+
+If the current window [l…r] is already sorted (nums[l] < nums[r]):
+→ the leftmost element nums[l] is the minimum in this window, so answer is found.
+
+Otherwise:
+
+Check which half is sorted.
+
+If left half (l…mid) is sorted → minimum must be in right half.
+
+If right half (mid…r) is sorted → minimum must be in left half.
+
+You update the answer with nums[mid] every loop.
+
+*/
+class Solution {
+    public int findMin(int[] nums) {
+        int n = nums.length;
+        int l =0, r= n-1;
+        int ans = nums[0];
+        while(l<=r){
+            if(nums[l]<nums[r]){
+                ans = Math.min(ans,nums[l]);
+                break;
+            }
+            int mid = (l+r)/2;
+            ans = Math.min(ans,nums[mid]);
+            //l,mid are in sorted segement
+            if(nums[l]<=nums[mid])//then search in other segment for min
+            {
+                l=mid+1;
+            }
+            //mid,r in sorted segment
+            else if(nums[mid]<=nums[r])//search in other segemnt
+            {
+                r=mid -1;
+            }
+        }   
+        return ans;
+    }
+}
