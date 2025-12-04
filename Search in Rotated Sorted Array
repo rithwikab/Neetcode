@@ -1,0 +1,51 @@
+/*
+time complexity - O(logn)
+space complexity - O(n)
+INTUITION
+Find the pivot (smallest element) — this splits the array into two sorted halves.
+
+Pivot index sep means array is sorted on 0..sep-1 and sep..n-1.
+
+Decide where to search: the target must lie in one of those two sorted halves.
+
+Binary-search the left half 0..sep-1 (standard binary search).
+
+If not found, binary-search the right half sep..n-1.
+
+Return the index if found, otherwise -1.
+
+*/
+class Solution {
+    public int search(int[] nums, int target) {
+        int sep = pivot(nums);
+        int l=0,r=sep-1;
+        while(l<=r){
+            int mid = l+(r-l)/2;
+            if(nums[mid]==target)return mid;
+            else if(target > nums[mid])l=mid+1;
+            else r=mid-1;
+        }
+        l =sep;r=nums.length-1;
+        while(l<=r){
+            int mid = l+(r-l)/2;
+            if(nums[mid]==target)return mid;
+            else if(target > nums[mid])l=mid+1;
+            else r=mid-1;
+        }
+        return -1;
+    }
+    public int pivot(int[] nums){
+        int n = nums.length;
+        int l = 0, r = n-1;
+        while(l<r){
+            int mid = l+(r-l)/2;
+            if(nums[mid]>nums[r]){
+                l = mid + 1;
+            }
+            else {
+                r = mid;
+            }
+        }
+        return l ;
+    }
+}
