@@ -1,0 +1,85 @@
+/*
+time complexity - O(n)
+space complexity - O(n)
+INTUITION
+1. Use a stack to store indices of increasing bar heights.
+
+We keep the stack in strictly increasing order of heights.
+Why?
+Because as long as bars keep increasing, each bar “hopes" to extend its rectangle to the right.
+
+2. When you see a bar shorter than the stack top → POP
+
+A shorter bar cuts off the rectangle of any taller bar before it.
+
+So the moment you see a smaller height:
+
+The bar at the top of the stack cannot extend any further right.
+
+Its next smaller bar on the right = current index i.
+
+This is when you compute area for that bar.
+
+3. For every popped bar:
+
+Let height = heights[popped]
+
+The right boundary = i (current index)
+
+The left boundary = index just below the popped one in the stack
+
+Thus:
+
+width = (i - left_smaller_index - 1)
+
+
+If stack is empty:
+
+width = i
+
+
+This means the bar extends all the way to the beginning.
+
+Compute area:
+
+area = height * width
+
+
+Update max.
+
+4. Continue until stack is increasing again
+
+Once the shorter bar is handled, push the current index into the stack.
+
+5. Add a virtual bar of height 0 at the end
+
+That’s why the loop goes:
+
+for (int i = 0; i <= n; i++)
+
+
+At i == n, treat height as 0 → forces all remaining bars to be popped & processed.
+
+
+*/
+
+
+
+public class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        int maxArea = 0;
+        Stack<Integer> stack = new Stack<>();
+
+        for (int i = 0; i <= n; i++) {
+            while (!stack.isEmpty() &&
+                 (i == n || heights[stack.peek()] >= heights[i])) {
+                int height = heights[stack.pop()];
+                int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+                maxArea = Math.max(maxArea, height * width);
+            }
+            stack.push(i);
+        }
+        return maxArea;
+    }
+}
