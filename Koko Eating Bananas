@@ -1,0 +1,44 @@
+/*
+time complexity - O(nlogm) - m is max value of array - m is getting divided by 2 for binary search and for each search entire array is traversed
+space complexity - O(1) - no extra space
+INTUITION
+You are trying to find the slowest eating speed K such that Koko still finishes all bananas within h hours.
+
+If K is too slow, total hours exceed h → speed must increase.
+
+If K is fast enough, total hours ≤ h → try a smaller speed to minimize K.
+
+This creates a monotonic behavior:
+
+As speed increases, required hours always decrease.
+Which is exactly why binary search works on the "answer" space.
+
+You binary-search the speed from 1 to max(piles), check how many hours it would take, and adjust.
+
+*/
+
+
+
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int max = Integer.MIN_VALUE;
+        for(int i:piles)max= Math.max(max,i);
+        int ans = Integer.MAX_VALUE;
+        int l = 1, r= max;
+        while(l<=r){
+            int mid = (l+r)/2;
+            int hrs = 0;
+            for(int i=0;i<piles.length;i++){
+                hrs+=Math.ceil((double)piles[i]/mid);
+            }
+            if(hrs<=h){
+                ans = Math.min(ans,mid);
+                r=mid-1;
+            }
+            else{
+                l = mid+1;
+            }
+        }
+        return ans;
+    }
+}
