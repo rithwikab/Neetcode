@@ -1,0 +1,47 @@
+/*
+time complexity - O(log(min(m,n)))
+space complexity - O(1)
+INTUITION
+1. We want to split both sorted arrays into two halves where the left half contains exactly half the total numbers.
+2. We choose where to cut in the smaller array, and that automatically decides where to cut in the larger array.
+3. We check only the values immediately around the cuts to see if the left side is fully ≤ the right side.
+4. If the left side is not valid, we shift our cut left or right just like binary search.
+5. Once the perfect split is found, the median is simply the middle value(s) around those cuts.
+*/
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int total = nums1.length+nums2.length;
+        int half = (total + 1)/2;
+        if(nums1.length>nums2.length){
+            int[] temp = nums1;
+            nums1 = nums2;
+            nums2 = temp;
+        }
+        int l = 0 , r = nums1.length;
+        while(l<=r){
+            int mid = (l+r)/2;
+            int mid2 = half- mid;
+
+            int left1 = mid>0 ? nums1[mid-1] : Integer.MIN_VALUE;
+            int left2 = mid2>0 ? nums2[mid2 -1] : Integer.MIN_VALUE;
+            int right1 = mid < nums1.length ? nums1[mid] : Integer.MAX_VALUE;
+            int right2 = mid2 < nums2.length ? nums2[mid2] : Integer.MAX_VALUE;
+            if(left1<=right2 && left2<=right1){
+                if(total % 2 ==0){
+                    return (Math.max(left1,left2)+Math.min(right1,right2))/2.0;
+                }
+                else{
+                    return Math.max(left1,left2);
+                }
+            }
+            else if (left1>right2){
+                r = mid - 1;
+            }
+            else{
+                l = mid +1;
+            }
+
+        }
+        return -1.0;
+    }
+}
