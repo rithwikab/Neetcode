@@ -1,0 +1,71 @@
+/*
+time complexity - O(logn) - n is max number of time stamps for each key
+space complexity - O(n*m) - m is number of keys and n is max number of timestamps for each key 
+INTUITION
+set(key, value, timestamp)
+
+Group all values for a key inside a list.
+
+Since timestamps are always increasing, we simply append (timestamp, value) to the list.
+
+This keeps each key’s list sorted automatically.
+
+get(key, timestamp)
+
+Look at the list of all (ts, value) entries for that key.
+
+We need the value whose timestamp is ≤ given timestamp and closest to it.
+
+Run binary search to find the largest timestamp ≤ target.
+
+If exact timestamp found → return value.
+
+If not found, return the value at index r (the last timestamp smaller than target).
+
+If even that doesn’t exist, return "".
+*/
+class Bundle {
+    int ts;
+    String val;
+    public Bundle(int a,String b){
+        this.ts=a;
+        this.val=String.valueOf(b);
+    }
+}
+
+class TimeMap {
+    public Map<String,List<Bundle>> m;
+
+    public TimeMap() {
+        m = new HashMap<>();
+    }
+    
+    public void set(String key, String value, int timestamp) {
+        Bundle b = new Bundle(timestamp,value);
+        m.putIfAbsent(key,new ArrayList<>());
+        m.get(key).add(b);
+    }
+    
+    public String get(String key, int timestamp) {
+        if(!m.containsKey(key))return "";
+        int n = m.get(key).size();
+        int l = 0;
+        int r = n-1;
+        while(l<=r){
+            int mid = l+(r-l)/2;
+            if(m.get(key).get(mid).ts==timestamp){
+                return m.get(key).get(mid).val;
+            }
+            else if(m.get(key).get(mid).ts < timestamp){
+                l = mid + 1;
+            }
+            else{
+                r = mid -1;
+            }
+        }
+        if(r>=0)return m.get(key).get(r).val;
+        else return "";
+    }
+}
+
+
