@@ -1,0 +1,63 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+/*INTUITION
+If one list is empty, return the other — nothing left to merge there.
+
+Compare the first nodes of both lists.
+
+Pick the smaller node — that node should appear next in the merged list.
+
+Recursively merge the rest of the lists, attaching the result to the chosen node’s next.
+
+Return the chosen node as the head of this merged segment.
+*/
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        /*By Recursion time complexity - o(m+n) , space complexity - o(m+n) for call stack
+        if(list1==null){
+            return list2;
+        }
+        if(list2==null){
+            return list1;
+        }
+        if(list1.val<=list2.val){
+            list1.next = mergeTwoLists(list1.next,list2);
+            return list1;
+        }
+        else if(list2.val<=list1.val){
+            list2.next = mergeTwoLists(list2.next,list1);
+            return list2;
+        }
+        return new ListNode();
+        */
+        /* by iteration* time complexity - O(m+n) , space complexity - O(1)/
+        ListNode extra = new ListNode(0);
+        ListNode temp = extra;
+        while(list1!=null && list2!=null){
+            if(list1.val<=list2.val){
+                temp.next = list1;
+                list1 = list1.next;
+            }
+            else if(list2.val<list1.val){
+                temp.next = list2;
+                list2 = list2.next;
+            }
+            temp = temp.next;
+        }
+        if(list1!=null){
+            temp.next = list1;
+        }
+        else{
+            temp.next = list2;
+        }
+        return extra.next;
+    }
+}
