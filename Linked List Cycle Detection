@@ -1,0 +1,32 @@
+/* time complexity - O(n)  each node processed once
+space complexity - o(1)
+INTUITION
+Use two pointers:
+
+sp = slow → moves 1 step
+
+fp = fast → moves 2 steps
+
+If the fast pointer reaches null, it means the list ended → no cycle.
+
+If the list has a cycle, the fast pointer eventually “laps” the slow pointer because it moves faster.
+
+When fast and slow meet, it confirms a cycle exists.
+
+Return true if they meet, else false.
+*/
+
+
+class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode fp = head;
+        ListNode sp = head;
+        while(fp!=null && fp.next!=null){
+            fp = fp.next.next;
+            sp = sp.next;
+            if(fp==sp)return true;
+        }
+        
+        return false;
+    }
+}
