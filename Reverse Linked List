@@ -1,0 +1,54 @@
+/*
+time complexity - O(n) 
+space complexity - O(1)
+INTUITION
+Use two pointers (p and q):
+
+p = previous node (starts at head)
+
+q = current node (starts at head.next)
+
+Break the link on the first step so that the original head no longer points forward (important to avoid cycles).
+
+Iteratively flip the arrow:
+
+Save q.next in temp
+
+Point q.next back to p (reverse link)
+
+Move both pointers forward (p = q, q = temp)
+
+When q becomes null, p is the new head.
+
+Return p as the reversed list's head.
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head==null)return head;
+        ListNode p,q;
+        p = head;
+        q = p.next;
+        while(q!=null){
+            if(p==head){
+                p.next = null;
+            }
+            ListNode temp = q.next;
+            q.next = p;
+            p = q;
+            q = temp;
+        }
+        head = p;
+        return head;
+    }
+}
