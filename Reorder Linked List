@@ -1,0 +1,71 @@
+/* time complexity - O(n)
+space complexity - O(1)
+INTUITION
+1. Find the middle of the linked list
+
+Use slow (sp) and fast (fp) pointers:
+
+slow moves 1 step
+
+fast moves 2 steps
+When fast reaches the end → slow is at the midpoint.
+
+2. Reverse the second half
+
+Start from sp.next and reverse the list normally.
+Cut the list in half by doing sp.next = null.
+
+Now you have:
+
+First half: original order
+
+Second half: reversed order
+
+3. Merge both halves alternately
+
+Take one node from the first half, then one from the reversed half, and keep stitching them together.
+
+This “weaves” the two halves into the required reorder pattern.
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head.next == null)return ;
+        ListNode fp=head,sp=head;
+        while(fp!=null && fp.next!=null){
+            fp = fp.next.next;
+            sp = sp.next;
+        }
+        ListNode cur = sp.next;
+        ListNode prev = null;
+        sp.next = null;
+        while(cur!=null){
+            ListNode t = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = t;
+        }
+        
+        ListNode h1 = head ; 
+        ListNode h2 = prev;
+        while(h2!=null){
+            ListNode t1 = h1.next;
+            ListNode t2 = h2.next;
+            h1.next = h2;
+            h2.next = t1;
+            h1 = t1;
+            h2 = t2;
+        }
+        
+    }
+}
