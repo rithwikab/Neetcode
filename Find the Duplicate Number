@@ -1,0 +1,26 @@
+/* 
+time complexity - o(n)
+space complexity - o(1)
+INTUITION 
+Every number points to an index (value → index).
+
+When you visit a number, go to the index it represents.
+
+If the value at that index is already negative, it means you have visited this index before → the number is a duplicate.
+
+Otherwise, mark that index as visited by flipping it to negative.
+
+First index that is already negative = the duplicate.
+*/
+class Solution {
+    public int findDuplicate(int[] nums) {
+        for(int i=0 ;i<nums.length ; i++){
+            int idx = Math.abs(nums[i])-1;
+            if(nums[idx] < 0){
+                return Math.abs(nums[i]);
+            }
+            nums[idx]*=-1;
+        }
+        return -1;
+    }
+}
