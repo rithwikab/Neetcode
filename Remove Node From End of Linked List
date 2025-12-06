@@ -1,0 +1,65 @@
+/*
+time complexity - O(n)
+space complexity - O(1)
+INTUITION 
+1. Count the total number of nodes
+
+Walk through the list once and get the total length.
+
+2. Convert “nth from end” into a position from the front
+
+If the list length is L, then the node to remove is at position
+L - n (0-based steps to move).
+
+3. Walk again to reach that node
+
+Move count steps forward until you land on the node that needs to be deleted.
+
+4. Remove the node
+
+If it has a previous node → link prev.next to cur.next
+
+If it’s the head → move head to head.next
+
+5. Return the updated list
+
+You’ve skipped the target node, effectively removing it.
+
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode cur = head;
+        int count = 0;
+        while(cur!=null){
+            count ++;
+            cur = cur.next;
+        }
+        count = count-n;
+        ListNode prev = null;
+        cur = head;
+        while(count!=0){
+         prev = cur;
+         cur = cur.next;  
+         count--;
+        }
+        if(prev!=null){
+            prev.next = cur.next;
+        }
+        else{
+            cur = cur.next;
+            head = cur;
+        }
+        return head;
+    }
+}
