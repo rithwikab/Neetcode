@@ -1,0 +1,55 @@
+/*
+time complexity - O(h) h is height of BST which is n-1 max - we traverse each node along the height of the tree
+space complexity - O(1);
+INTUITION
+1️⃣ Start at the root
+
+2️⃣ If both p and q are greater than current node
+→ LCA must be in the right subtree
+
+3️⃣ If both p and q are smaller than current node
+→ LCA must be in the left subtree
+
+4️⃣ Otherwise:
+
+they split here OR
+
+one of them is the current node
+
+👉 Current node is the LCA
+
+Stop immediately.
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode cur = root;
+        while(cur!=null){
+            if(p.val > cur.val && q.val > cur.val){
+                cur = cur.right;
+            }
+            else if(p.val<cur.val && q.val<cur.val){
+                cur = cur.left;
+            }
+            else{
+                return cur;
+            }
+        }
+        return null;
+    }
+}
