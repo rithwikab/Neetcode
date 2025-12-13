@@ -1,0 +1,48 @@
+/*
+time complexity - O(n) each node visited once
+space complexity - O(n) recursive stack
+INTUITION
+1️⃣ If the node is null, depth is 0
+No nodes → no height.
+
+2️⃣ Depth of a node = 1 + deeper subtree
+
+Compute depth of left subtree
+
+Compute depth of right subtree
+
+Take the maximum
+
+3️⃣ Apply this recursively to every node
+Each node contributes:
+
++1 for itself
+
+plus the deeper of its children
+
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    public int maxDepth(TreeNode root) {
+        int res = 0;
+        if(root == null)return res;
+        res= res + 1 + Math.max(maxDepth(root.left),maxDepth(root.right));
+        return res;
+        
+    }
+}
