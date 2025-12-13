@@ -1,0 +1,94 @@
+/*
+k - no of lists 
+n - no of nodes in lists
+time complexity - O(nlogk)
+space complexity - O(k)
+INTUITION
+1️⃣ What is the core problem?
+
+You have k sorted linked lists and you must always pick the smallest current node to build one sorted list.
+
+So the problem becomes:
+
+“Repeatedly choose the smallest head among k lists.”
+
+2️⃣ Why a min heap?
+
+A min heap lets you:
+
+see the smallest element in O(1)
+
+update in O(log k)
+
+So instead of scanning k lists every time, the heap does it efficiently.
+
+3️⃣ Initial setup
+
+Push the head of each non-empty list into the heap
+
+Heap size is at most k
+
+This represents the “current candidates” for the next smallest value.
+
+4️⃣ Building the merged list
+
+Use a dummy node (ans) to simplify pointer handling
+
+ptr always points to the last node of the merged list
+
+5️⃣ Main loop logic
+
+While the heap isn’t empty:
+
+Pop the smallest node
+
+Attach it to the merged list
+
+Move ptr forward
+
+Push the popped node’s next into the heap (if it exists)
+
+This keeps the heap populated with only valid next candidates.
+
+6️⃣ Final result
+
+ans.next skips the dummy node
+
+The merged list is fully sorted
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length==0)return null;
+        PriorityQueue<ListNode> pq = new PriorityQueue<>
+        ((a,b)->a.val-b.val);
+        for(ListNode i:lists){
+            if(i!=null){
+                pq.add(i);
+            }
+        }
+        ListNode ans = new ListNode(0);
+        ListNode ptr = ans;
+        while(!pq.isEmpty()){
+            ListNode cur = pq.poll();
+            ptr.next = cur;
+            ptr = ptr.next;
+            cur = cur.next;
+            if(cur!=null){
+                pq.add(cur);
+            }
+        }
+
+        return ans.next;
+    }
+}
