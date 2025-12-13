@@ -1,0 +1,57 @@
+/*
+time complexity - O(n) each node visited once
+space complexity - O(n) for recursive stack
+INTUITION
+1️⃣ If the node is null, stop
+There’s nothing to invert.
+
+2️⃣ Swap the children
+
+Left becomes right
+
+Right becomes left
+
+This inverts the tree at the current node.
+
+3️⃣ Repeat for subtrees
+
+Invert left subtree
+
+Invert right subtree
+
+The same logic applies at every node.
+
+4️⃣ Return the root
+The tree is inverted in place.
+
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if(root == null ){
+            return root;
+        }
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+
+    }
+}
