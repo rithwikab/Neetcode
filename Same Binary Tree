@@ -1,0 +1,26 @@
+/*
+time complexity - O(n)
+space complexity - O(n) recursive stack
+INTUITION
+Two trees are the same if:
+
+Both nodes are null → same
+
+One is null → different
+
+Values differ → different
+
+Left subtrees are the same and
+
+Right subtrees are the same
+*/
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val != q.val) return false;
+
+        return isSameTree(p.left, q.left)
+            && isSameTree(p.right, q.right);
+    }
+}
