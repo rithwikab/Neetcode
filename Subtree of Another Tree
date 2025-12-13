@@ -1,0 +1,51 @@
+/*
+time complexity - O(m*n) m-nodes in subRoot and n-nodes in main tree 
+space complexity - O(m+n) recursive stack call for m nodes of subRoot and stack storage for n nodes of main tree
+INTUITION
+Traverse every node in root
+
+When a node’s value matches subRoot.val, check full subtree equality using isSameTree
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {  
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if(subRoot == null)return true;
+        if(root == null && subRoot!= null)return false;
+        Stack<TreeNode> s = new Stack<>();
+        s.add(root);
+        boolean ans = false;
+        while(!s.isEmpty()){
+            TreeNode cur = s.pop();
+            if(cur.val == subRoot.val){
+                ans |=isSameTree(cur,subRoot);
+            }
+            if(cur.left!=null)s.add(cur.left);
+            if(cur.right!=null)s.add(cur.right);
+        }
+        return ans;
+    }
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val != q.val) return false;
+
+        return isSameTree(p.left, q.left)
+            && isSameTree(p.right, q.right);
+    }
+    
+}
