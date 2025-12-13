@@ -1,0 +1,79 @@
+/*
+time complexity - O(n)
+space complexity - O(1)
+INTUITION
+1️⃣ Use a dummy node
+So reversing the first group is no different from the rest.
+
+2️⃣ Process the list in chunks of size k
+Before reversing, check:
+
+“Do I even have k nodes left?”
+
+If not → stop (leave them as is).
+
+3️⃣ Reverse only the current group
+
+Reverse pointers within the group
+
+Keep track of:
+
+what comes before the group
+
+what comes after the group
+
+4️⃣ Reconnect the reversed group
+
+Previous group → new head of this group
+
+Tail of this group → next group
+
+5️⃣ Move forward
+
+Shift prevGroup to the tail of the reversed group
+
+Repeat for the next k nodes
+*/
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0,head);
+        ListNode prevGroup = dummy;
+        while(true){
+            ListNode kth = getK(prevGroup,k);
+            if(kth==null){
+                break;
+            }
+            ListNode nextGroup = kth.next;
+            ListNode prev = kth.next;
+            ListNode cur = prevGroup.next;
+            while(cur!=nextGroup){
+                ListNode tmp = cur.next;
+                cur.next = prev;
+                prev = cur;
+                cur = tmp;
+            }
+            ListNode tmp = prevGroup.next;
+            prevGroup.next = kth;
+            prevGroup = tmp;
+        }
+        return dummy.next;
+    }
+    public ListNode getK(ListNode cur,int k){
+        while(cur!=null && k>0){
+            cur = cur.next;
+            k--;
+        }
+        return cur;
+    }
+}
