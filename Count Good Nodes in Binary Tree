@@ -1,0 +1,45 @@
+/*
+time complexity - O(n) each node visited once
+space complexity - O(n) recursive stack
+INTUITION
+A node is “good” if it’s not smaller than any value seen on the path from root
+
+While traversing:
+
+  keep track of the maximum value so far
+  
+  compare current node with it
+  
+  update max and continue
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    int count = 0;
+    public int goodNodes(TreeNode root) {
+        dfs(root,Integer.MIN_VALUE);
+        return count;
+        
+    }
+    public void dfs(TreeNode node,int parentVal){
+        if(node == null)return;
+        if(node.val>=parentVal)count++;
+        parentVal = Math.max(node.val,parentVal);
+        dfs(node.left,parentVal);
+        dfs(node.right,parentVal);
+    }
+}
