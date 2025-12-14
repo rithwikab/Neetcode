@@ -1,0 +1,63 @@
+/*
+time complexity - O(n)
+space complexity - O(n)
+INTUITION
+1️⃣ Traverse the tree level by level
+Use a queue so nodes are processed in the order they appear.
+
+2️⃣ At each step, process one full level
+
+The queue size tells you how many nodes are in the current level
+
+Process exactly that many nodes
+
+3️⃣ Collect values, push children
+
+Add current node’s value to the level list
+
+Push its left and right children into the queue
+
+4️⃣ Repeat until queue is empty
+Each iteration builds one level of the answer.
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null)return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while(!q.isEmpty())
+        {
+            List<Integer> curLevel = new ArrayList<>();
+            for(int i=q.size();i>0;i--){
+                TreeNode curNode = q.poll();
+                if(curNode!=null){
+                    curLevel.add(curNode.val);
+                    q.add(curNode.left);
+                    q.add(curNode.right);
+                }
+            }
+            if(!curLevel.isEmpty()){
+                res.add(curLevel);
+            }
+        }
+        return res;
+        
+    }
+}
