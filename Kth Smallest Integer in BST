@@ -1,0 +1,45 @@
+/*
+time complexity - O(n)
+space complexity - O(n)
+INTUITION
+This is a Binary Search Tree
+
+In a BST, inorder traversal gives values in sorted order
+
+So:
+
+    Traverse inorder
+    
+    Store values in a list
+    
+    Pick the (k−1)th element
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    List<Integer> l = new ArrayList<>();
+    public int kthSmallest(TreeNode root, int k) {
+        dfs(root);
+        return l.get(k-1);
+    }
+    public void dfs(TreeNode node){
+        if(node == null)return;
+        dfs(node.left);
+        l.add(node.val);
+        dfs(node.right);
+    }
+}
