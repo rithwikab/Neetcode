@@ -1,0 +1,30 @@
+/*
+time complexity - O(m*logk) m-no.of calls made to add() logk - time for insertion into heap
+space complexity - O(k) at any point  max k elements are present in the heap
+INTUITION
+Keep only the biggest k numbers.
+The smallest among them is the kth largest.
+*/
+class KthLargest {
+    private PriorityQueue<Integer> pq ;
+    private int k;
+    public KthLargest(int k, int[] nums) {
+         this.k = k;
+        this.pq = new PriorityQueue<>();
+        for(int i:nums){
+            this.pq.add(i);
+            if(pq.size()>k){
+                pq.poll();
+            }
+        }
+       
+    }
+    
+    public int add(int val) {
+        pq.add(val);
+        if(pq.size()>k){
+            pq.poll();
+        }
+        return pq.peek();
+    }
+}
