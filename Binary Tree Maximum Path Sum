@@ -1,0 +1,46 @@
+/*
+time complexity - O(n) each node accessed once
+space complexity - O(n) recursive stack
+INTUITION
+At each node, we update the maximum path sum using the sum of the best path from the left subtree, the node’s value, and the best path from the right subtree.
+
+We compute the best path from the left and right recursively, ignoring negative paths.
+
+However, when returning a value to the parent, we can only choose one direction (left or right), because a path moving upward cannot split. Therefore, we return the node’s value plus the maximum of the left or right path.
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    int maxSum = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        dfs(root);
+        return maxSum;
+
+    }
+    public int dfs(TreeNode node){
+        if(node == null) return 0;
+        // maxsum if we go left from node
+        int leftMax = Math.max(dfs(node.left),0);
+        // maxsum if we go right from node
+        int rightMax = Math.max(dfs(node.right),0);
+        // maxsum where node is connecting both left and right paths
+        maxSum = Math.max(maxSum,node.val+leftMax+rightMax);
+        //at each node we need to know what's the max value path either left or right
+        return node.val + Math.max(leftMax,rightMax);
+    }
+}
+
