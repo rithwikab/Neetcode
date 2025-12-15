@@ -1,0 +1,69 @@
+/*
+time complexity - O(n) each node accessed once for each function
+space complexity - O(n) recursive stack for each function 
+INTUITION
+Use preorder traversal to record the tree structure
+
+Every time you see a null, write a marker ("N")
+
+While rebuilding, read values in the same order:
+
+"N" → return null
+
+value → create node, then build left and right
+
+The traversal order itself tells you where each subtree starts and ends.
+
+*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+public class Codec {
+    int idx = 0;
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        List<String> l = new ArrayList<>();
+        serializeDfs(root,l);
+        return String.join(",",l);
+
+    }
+    public void serializeDfs(TreeNode node,List<String> l){
+        if(node == null){
+            l.add("N");
+            return;
+        }
+        l.add(String.valueOf(node.val));
+        serializeDfs(node.left,l);
+        serializeDfs(node.right,l);
+    }
+    public TreeNode deserializeDfs(String[] s){
+        if(s[idx].equals("N")){
+            idx++;
+            return null;
+        }
+        TreeNode node = new TreeNode(Integer.parseInt(s[idx]));
+        idx++;
+        node.left = deserializeDfs(s);
+        node.right = deserializeDfs(s);
+        return node;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] s = data.split(",");
+        return deserializeDfs(s);
+    }
+}
