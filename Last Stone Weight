@@ -1,0 +1,31 @@
+/*
+time complexity - O(n*logn)
+space complexity - O(n)
+INTUITION
+Each turn, you must take the two heaviest stones
+
+A max-heap always gives the heaviest stones instantly
+
+Smash them:
+
+equal → both destroyed
+
+unequal → push back the difference
+
+Repeat until ≤ 1 stone remains
+*/
+class Solution {
+    public int lastStoneWeight(int[] stones) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)->b-a);
+        for(int i:stones){
+            pq.offer(i);
+        }
+        while(pq.size()>=2){
+            int max1 = pq.poll();
+            int max2 = pq.poll();
+            if(max1!=max2)pq.offer(max1-max2);
+        }
+        if(pq.size()==1)return pq.poll();
+        return 0;
+    }
+}
