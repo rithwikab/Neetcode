@@ -1,0 +1,74 @@
+/*
+time complexity - O(nlog26) - O(n)
+space complexity - O(26)
+INTUITION
+Always execute the task with highest remaining frequency
+
+After execution, put it into a cooldown queue
+
+When its cooldown expires, make it available again
+
+If nothing is available → idle, but time still moves forward
+*/
+class Job {
+    char name;
+    int freq;
+    int readyTime;
+
+    Job(char name, int freq, int readyTime) {
+        this.name = name;
+        this.freq = freq;
+        this.readyTime = readyTime;
+    }
+}
+
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+
+        // frequency count
+        int[] freq = new int[26];
+        for (char c : tasks) {
+            freq[c - 'A']++;
+        }
+
+        // max heap by remaining frequency
+        PriorityQueue<Job> pq =
+            new PriorityQueue<>((a, b) -> b.freq - a.freq);
+
+        // min heap by ready time (cooldown queue)
+        PriorityQueue<Job> waiting =
+            new PriorityQueue<>((a, b) -> a.readyTime - b.readyTime);
+
+        // add one job per unique task
+        for (int i = 0; i < 26; i++) {
+            if (freq[i] > 0) {
+                pq.offer(new Job((char) ('A' + i), freq[i], 0));
+            }
+        }
+
+        int time = 0;
+
+        // run while work still exists
+        while (!pq.isEmpty() || !waiting.isEmpty()) {
+            time++;
+
+            // if a task is available, execute it
+            if (!pq.isEmpty()) {
+                Job cur = pq.poll();
+                cur.freq--;
+                cur.readyTime = time + n;
+
+                if (cur.freq > 0) {
+                    waiting.offer(cur);
+                }
+            }
+
+            // move tasks whose cooldown is finished back to pq
+            while (!waiting.isEmpty() && waiting.peek().readyTime <= time) {
+                pq.offer(waiting.poll());
+            }
+        }
+
+        return time;
+    }
+}
