@@ -1,0 +1,22 @@
+/*
+time - O(nlogk)
+space - O(k)
+INTUITION
+Keep only the k largest numbers seen so far
+
+If the heap grows beyond k, remove the smallest
+
+What remains are the k largest numbers
+
+The smallest among them is the kth largest
+*/
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int i:nums){
+            pq.offer(i);
+            if(pq.size()>k)pq.poll();
+        }
+        return pq.peek();
+    }
+}
