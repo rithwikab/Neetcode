@@ -1,58 +1,99 @@
-/*
-time complexity - O(nlogn) offering n elements into priority queue
-space complexity - O(n) 
-INTUITION
+/*time complexity - O(F+logF)≈O(F) F number of followees
+space complexity - O(F) we hold one tweet per followee at each point
 
+INTUITION
+Each user’s tweets are already sorted by time
+
+The news feed is just:
+
+the 10 most recent tweets among all followed users
+
+Instead of merging all tweets:
+
+Take the latest tweet from each followee
+
+Repeatedly pick the most recent one
+
+Then move backward in that user’s tweet list
 */
 
 
 
 class Twitter {
+
+    // Global timestamp to order tweets by recency
     int time;
-    HashMap<Integer,List<int[]>> tweetMap;
-    HashMap<Integer,Set<Integer>> followMap;
+
+    // userId -> list of tweets [time, tweetId]
+    HashMap<Integer, List<int[]>> tweetMap;
+
+    // userId -> set of users they follow
+    HashMap<Integer, Set<Integer>> followMap;
 
     public Twitter() {
         time = 0;
         tweetMap = new HashMap<>();
         followMap = new HashMap<>();
     }
-    
+
+    // Add a tweet with increasing timestamp
     public void postTweet(int userId, int tweetId) {
-        tweetMap.computeIfAbsent(userId, k-> new ArrayList<>()).add(new int[]{time++,tweetId});
+        tweetMap
+            .computeIfAbsent(userId, k -> new ArrayList<>())
+            .add(new int[]{time++, tweetId});
     }
-    
+
     public List<Integer> getNewsFeed(int userId) {
         List<Integer> res = new ArrayList<>();
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->b[0]-a[0]);
-        followMap.computeIfAbsent(userId , k-> new HashSet<>()).add(userId);
-        for(int followeeId : followMap.get(userId)){
-            if(tweetMap.containsKey(followeeId)){
+
+        // Max heap: most recent tweet on top
+        PriorityQueue<int[]> pq =
+            new PriorityQueue<>((a, b) -> b[0] - a[0]);
+
+        // Ensure user follows themselves
+        followMap
+            .computeIfAbsent(userId, k -> new HashSet<>())
+            .add(userId);
+
+        // Push the latest tweet of each followee into the heap
+        for (int followeeId : followMap.get(userId)) {
+            if (tweetMap.containsKey(followeeId)) {
                 List<int[]> tweets = tweetMap.get(followeeId);
-                int index = tweets.size()-1;
+                int index = tweets.size() - 1;
                 int[] tweet = tweets.get(index);
-                pq.offer(new int[]{tweet[0],tweet[1],followeeId,index});
+
+                // [time, tweetId, followeeId, index in list]
+                pq.offer(new int[]{tweet[0], tweet[1], followeeId, index});
             }
         }
-        while(!pq.isEmpty() && res.size() < 10){
+
+        // Extract top 10 most recent tweets
+        while (!pq.isEmpty() && res.size() < 10) {
             int[] cur = pq.poll();
             res.add(cur[1]);
+
             int index = cur[3];
-            if(index > 0 ){
-                int[] tweet = tweetMap.get(cur[2]).get(index-1);
-                pq.offer(new int[]{tweet[0],tweet[1],cur[2],index-1});
+            // Push the next older tweet from the same user
+            if (index > 0) {
+                int[] tweet =
+                    tweetMap.get(cur[2]).get(index - 1);
+                pq.offer(new int[]{tweet[0], tweet[1], cur[2], index - 1});
             }
         }
+
         return res;
-        
     }
-    
+
+    // follower starts following followee
     public void follow(int followerId, int followeeId) {
-        followMap.computeIfAbsent(followerId , k->new HashSet<>()).add(followeeId);
+        followMap
+            .computeIfAbsent(followerId, k -> new HashSet<>())
+            .add(followeeId);
     }
-    
+
+    // follower stops following followee
     public void unfollow(int followerId, int followeeId) {
-        followMap.computeIfPresent(followerId,(k,v)->{
+        followMap.computeIfPresent(followerId, (k, v) -> {
             v.remove(followeeId);
             return v;
         });
