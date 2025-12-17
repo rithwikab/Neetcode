@@ -1,0 +1,59 @@
+/*
+Time Complexity: Exponential in the worst case.
+
+The recursion explores an exponential number of subsets (O(2ⁿ) in the worst case). 
+Additionally, for each valid combination found, a copy of the current list is made, 
+which costs O(n) in the worst case. Therefore, the overall time complexity is exponential.
+O(n · 2ⁿ) in the worst case
+
+Space Complexity: O(n) auxiliary space for recursion and current path, plus O(2ⁿ) output space 
+for storing all valid combinations.
+
+INTUITION
+
+Sort first so that duplicates sit next to each other.
+
+At each index, you have two choices:
+
+Pick the current number and move forward.
+
+Skip the current number.
+
+If you skip, you must skip all identical values, otherwise you’ll recreate the same combination.
+
+The while loop ensures that after returning from the pick path, you jump past all duplicates before exploring the skip path.
+
+This guarantees:
+
+Every number is used at most once.
+
+Duplicate combinations are never formed
+*/
+
+
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> curSet = new ArrayList<>();
+        dfs(candidates,0,target,curSet,res);
+        return res;
+    }
+    public void dfs(int[] a,int i,int target,List<Integer> curSet,List<List<Integer>> res){
+        if(target == 0){
+            res.add(new ArrayList<>(curSet));
+            return;
+        }
+        if(target < 0 || i>=a.length || target-a[i]<0){
+            return;
+        }
+       
+        curSet.add(a[i]);
+        dfs(a,i+1,target-a[i],curSet,res);
+        curSet.remove(curSet.size()-1);
+        // if a[i]==a[i+1] dont choose the same number again after going on that path and returning from the above line
+        while(i<a.length-1 && a[i]==a[i+1])i++;
+        dfs(a,i+1,target,curSet,res);
+        
+    }
+}
