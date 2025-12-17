@@ -1,0 +1,63 @@
+/*
+Backtracking complexity depends on the number of valid paths explored, not just the input size.
+
+Time Complexity: Exponential in the worst case, as all valid combinations are explored.
+The time complexity is exponential in the worst case because the algorithm explores all valid combinations whose sum equals the target. 
+At each recursive step, there are branching choices (pick or skip), and the recursion depth is bounded by how many times the smallest number 
+can be added before exceeding the target. Since the number of valid combinations itself can be exponential, the overall time complexity is exponential.
+
+Space Complexity:
+- Auxiliary space: O(target / min(nums)) due to recursion depth.
+- Output space: Exponential, proportional to the number of valid combinations.
+The auxiliary space complexity is O(target / min(nums)), which comes from the maximum depth of the recursion stack and the temporary list used 
+to store the current combination. Additionally, the output space is exponential, as all valid combinations must be stored in the result list.
+
+INTUITION
+Start with an empty combination and a sum of 0.
+
+Look at the current number (nums[index]).
+
+You have two choices:
+
+Pick it → add it to the current set and increase the sum.
+
+Skip it → move to the next number.
+
+If the sum becomes exactly equal to the target:
+
+You found a valid combination → save it.
+
+If the sum becomes greater than the target:
+
+This path can never work → stop exploring it.
+
+Keep repeating this process until:
+
+All valid combinations are found
+
+Or you run out of numbers
+*/
+class Solution {
+    public List<List<Integer>> combinationSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> curSet = new ArrayList();
+        int index = 0,curSum=0;
+        dfs(nums,index,curSum,curSet,res,target);
+        return res;
+    }
+    public void dfs(int[] nums,int index,int curSum,List<Integer> curSet,List<List<Integer>> res,int target)
+    {   
+        if(curSum==target){
+            res.add(new ArrayList<>(curSet));
+            return;
+        }
+        if(curSum>target || index>=nums.length ){
+            return;
+        }
+        curSet.add(nums[index]);
+        dfs(nums,index,curSum+nums[index],curSet,res,target);
+        curSet.remove(curSet.size()-1);
+        dfs(nums,index+1,curSum,curSet,res,target);
+    }
+}
+
