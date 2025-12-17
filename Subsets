@@ -1,0 +1,40 @@
+/*
+Time Complexity: O(2^n * n) 2^n subsets , for each subset copying arraylist and inserting as new arraylist take O(n)
+Space Complexity:
+- Output space: O(2^n * n) each subset has n numbers
+- Auxiliary space: O(n) recursion stack n calls
+INTUITION
+You are walking through the array one number at a time.
+
+For each number, you ask one question:
+
+“Do I include this number in my current subset or not?”
+
+  If yes → put it in the bag and move forward
+  
+  If no → skip it and move forward
+
+When you reach the end, whatever is in your bag is one valid subset.
+
+Then you back up and try the other choices.
+
+*/
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> cur = new ArrayList<>();
+        dfs(0,nums,cur,res);
+        return res;
+    }
+    public void dfs(int index , int[] nums ,List<Integer> cur , List<List<Integer>> res){
+        if(index>=nums.length){
+            res.add(new ArrayList<>(cur));
+            return;
+        }
+        cur.add(nums[index]);
+        dfs(index+1,nums,cur,res);
+        cur.remove(cur.size()-1);
+        dfs(index+1,nums,cur,res);
+    }
+
+}
