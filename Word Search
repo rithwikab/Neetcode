@@ -1,0 +1,52 @@
+/*
+Time Complexity: O(rows * cols * 4^L), where L is the length of the word. FROM EACH R,C PAIR WE DO DFS AND AT EACH DFS WE CAN MOVE IN 4 DIRECTION AND THE DEPTH OF THE TREE IS L
+Space Complexity: O(L) due to recursion stack. MAX DEPTH OF STACK IS LENGTH OF WORD L , WE CHECK FOR L CHARACTERS IN ONE STACK PATH
+
+INTUITION
+Try every cell as a possible starting point for the word.
+
+From a chosen cell, check if it matches the current character of the word.
+
+If it matches, temporarily mark the cell as visited so it can’t be reused.
+
+Move to any of the 4 directions to match the next character.
+
+If all characters are matched, return true.
+
+If a path fails, undo the visit mark and backtrack.
+
+If no path from any cell works, return false.
+
+*/
+class Solution {
+    int rows,cols;
+    public boolean exist(char[][] board, String word) {
+        rows = board.length;
+        cols = board[0].length;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(dfs(board,word,i,j,0))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean dfs(char[][] board,String word,int row,int col,int count){
+        if(count == word.length()){
+            return true;
+        }
+        if(row<0 || row >= rows || col<0 || col>=cols || board[row][col]!=word.charAt(count) || board[row][col]=='#'){
+            return false;
+        }
+        board[row][col] = '#';
+        boolean res = dfs(board,word,row+1,col,count+1) ||
+                dfs(board,word,row,col+1,count+1) ||
+                dfs(board,word,row-1,col,count+1)||
+                dfs(board,word,row,col-1,count+1);
+        board[row][col]=word.charAt(count);
+        return res;
+
+    }
+}
