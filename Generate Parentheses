@@ -1,0 +1,22 @@
+/*
+Time Complexity: O(Catalan(n) · n), since we generate all valid combinations and each has length O(n).
+
+Space Complexity: O(n) auxiliary space for recursion and string building, plus O(Catalan(n) · n) for storing the output.
+
+INTUITION
+You are building the string from left to right.
+
+You are allowed to place at most n opening brackets.
+
+You are allowed to place at most n closing brackets.
+
+You can always place ( as long as you still have some left.
+
+You can place ) only if it will not make the string invalid.
+
+A string becomes invalid only when ) exceeds ( at any point.
+
+Tracking how many ( and ) are still allowed is enough to prevent this.
+
+When both counts reach zero, you have a complete valid string.
+*/
