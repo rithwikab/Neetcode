@@ -1,0 +1,44 @@
+/*
+time complexity - O(n*2^n)
+space complexity - O(n*2^n) for output 
+auxiliary space - O(n) cur , O(n) recursive stack
+INTUITION
+Sort the array so all duplicates sit next to each other.
+
+At each index, you have two choices:
+
+Include the current number in the subset
+
+Exclude it
+
+If you exclude, skip all its duplicates at once so you don’t generate the same subset again.
+
+When you reach the end of the array, the current list is a valid subset, so store a copy.
+
+Backtrack by removing the last added number and continue exploring other choices.
+*/
+
+
+
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums); // O(nlogn) time in-place sort
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> cur = new ArrayList<>();
+        dfs(nums,0,cur,res);
+        return res;
+    }
+    // recursion stack depth max O(n) as it goes deeper into n indices of the array
+    public void dfs(int[] nums,int index,List<Integer> cur , List<List<Integer>> res){
+        if(index>=nums.length){
+            res.add(new ArrayList<>(cur)); //O(n) time to copy - executed for each 2^n subsets , O(n) max space
+            return;
+        }
+        cur.add(nums[index]); // O(1)
+        dfs(nums,index+1,cur,res);
+        while(index<nums.length-1 && nums[index]==nums[index+1])index++; 
+        cur.remove(cur.size()-1); // O(1)
+        dfs(nums,index+1,cur,res);
+
+    }
+}
