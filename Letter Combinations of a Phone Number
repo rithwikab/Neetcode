@@ -1,0 +1,45 @@
+/*
+Time: O(4^n) - EACH NUMBER MAPS TO A MAX OF 4 CHARACTERS , TREE BRANCHES INTO 4 AT EACH STEP WITH A MAX HEIGHT OF N (LENGTH OF STRING)
+Space: O(n) recursion + O(4^n) output (RECURSION STACK MAX SIZE IS LENGTH OF STRING , OUTPUT STORES 4^N DIFFERENT TYPES OF OPTIONS)
+
+INTUITION
+Each digit maps to a fixed set of letters.
+
+At index i, choose one letter for digits[i].
+
+Append it and move to the next digit.
+
+When all digits are processed, save the result.
+
+Backtrack and try the next letter.
+*/
+class Solution {
+    List<String> res = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
+
+    // fixed mapping → array lookup (O(1), no hashing)
+    String[] map = {
+        "", "", "abc", "def", "ghi",
+        "jkl", "mno", "pqrs", "tuv", "wxyz"
+    };
+
+    public List<String> letterCombinations(String digits) {
+        if (digits.length() == 0) return res;
+        dfs(digits, 0);
+        return res;
+    }
+
+    private void dfs(String digits, int index) {
+        if (index == digits.length()) {
+            res.add(sb.toString());
+            return;
+        }
+
+        String letters = map[digits.charAt(index) - '0'];
+        for (char c : letters.toCharArray()) {
+            sb.append(c);                 // choose
+            dfs(digits, index + 1);       // explore
+            sb.deleteCharAt(sb.length()-1); // unchoose
+        }
+    }
+}
