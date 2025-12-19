@@ -1,0 +1,78 @@
+/*
+Time Complexity: O(n · 2^n) There are O(2^n) possible partitions in the worst case, and each palindrome check costs O(n).
+Space Complexity: O(n) auxiliary space + O(2^n) output space
+1️⃣ Recursion stack
+
+Maximum depth occurs when every character is its own substring.
+
+Depth = O(n)
+
+2️⃣ Current partition storage
+
+At most n substrings in cur.
+
+3️⃣ Output storage
+
+Stores all valid partitions → exponential.
+
+
+
+INTUITION
+We try to cut the string into pieces such that every piece is a palindrome.
+
+start marks where the current substring begins.
+
+end keeps expanding to form the current substring s[start…end].
+
+If s[start…end] is a palindrome:
+
+Add it to the current partition.
+
+Start a new substring from end + 1.
+
+Whether palindrome or not, we also try to extend end to include more characters.
+
+When end reaches the end of the string:
+
+If start == end, it means the whole string has been validly partitioned.
+
+Add the current partition to the result.
+
+Backtrack by removing the last added substring and try other possibilities.
+
+*/
+class Solution {
+    List<List<String>> res = new ArrayList<>();
+    List<String> cur = new ArrayList<>();
+    public List<List<String>> partition(String s) {
+        dfs(0,0,s);
+        return res;
+    }
+    public void dfs(int start,int end,String s){
+        if(end>=s.length()){
+            if(start==end){
+                //end has already travelled entire string from start
+                // if start is already equal to end then we've got last valid palindrome in this path
+                // add to res
+                res.add(new ArrayList<>(cur));
+            }
+            return;
+        }
+        if(isPalindrome(s,start,end)){
+            cur.add(s.substring(start,end+1));
+            // we already got a palindrome , start new string from next index
+            dfs(end+1,end+1,s);
+            cur.remove(cur.size()-1);
+        }
+        //add next character to current string
+        dfs(start,end+1,s);
+    }
+    public boolean isPalindrome(String s , int l ,int r){
+        while(l<r){
+            if(s.charAt(l)!=s.charAt(r))return false;
+            l++;
+            r--;
+        }
+        return true;
+    }
+}
