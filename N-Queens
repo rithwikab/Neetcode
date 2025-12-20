@@ -1,0 +1,73 @@
+/*
+Time Complexity
+
+Worst case: O(N!)
+Because for each row, you try remaining safe columns and prune aggressively using constraints.
+
+(More precisely: backtracking with pruning → much less than N^N, but upper bound is O(N!))
+
+Space Complexity
+
+Auxiliary space: O(N^2) FOR Board
+
+recursion depth = N
+
+col, posDiag, negDiag each store up to N entries
+
+Output space: O(N × number_of_solutions)
+
+storing all valid boards
+
+INTUITION
+Place one queen per row, moving row by row.
+For the current row, try every column that is not already attacked by a previously placed queen.
+Use three sets to instantly check conflicts:
+
+  same column
+  
+  same positive diagonal (r + c)
+  
+  same negative diagonal (r − c)
+
+If a safe spot is found, place the queen, move to the next row, and backtrack after returning.
+*/
+class Solution {
+    List<List<String>> res = new ArrayList<>();
+    Set<Integer> col = new HashSet<>();
+    Set<Integer> posDiag = new HashSet<>();
+    Set<Integer> negDiag = new HashSet<>();
+    public List<List<String>> solveNQueens(int n) {
+        char[][] board = new char[n][n];
+        for(char[] row:board){
+            Arrays.fill(row,'.');
+        }
+        dfs(0,n,board);
+        return res;
+    }
+    public void dfs(int r,int n,char[][] board){
+        if(r==n){
+            List<String> copy = new ArrayList<>();
+            for(char[] row:board){
+                copy.add(new String(row));
+            }
+            res.add(copy);
+            return;
+        }
+        for(int c= 0; c<n; c++){
+            if(col.contains(c) || posDiag.contains(r+c) || negDiag.contains(r-c)){
+                continue;
+            }
+            col.add(c);
+            posDiag.add(r+c);
+            negDiag.add(r-c);
+            board[r][c]='Q';
+
+            dfs(r+1,n,board);
+
+            col.remove(c);
+            posDiag.remove(r+c);
+            negDiag.remove(r-c);
+            board[r][c]='.';
+        }
+    }
+}
