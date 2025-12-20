@@ -1,0 +1,55 @@
+/*
+TIME COMPLEXITY - n is no.of characters in word/prefix
+INSERT - O(n) 
+SEARCH - O(n)
+STARTSWITH - O(n)
+
+
+SPACE COMPLEXITY 
+O(t) - no.of trie nodes created , depends on unique substrings on all the words
+
+INTUITION
+Store words character by character in a tree, where each node represents one letter.
+While inserting or searching, walk down the tree following characters.
+Words with the same prefix share the same path, and a boolean isEnd marks when a full word finishes.
+
+*/
+class TrieNode{
+    Map<Character,TrieNode> m = new HashMap<>();
+    boolean isEnd = false;
+}
+class PrefixTree {
+    TrieNode root;
+    public PrefixTree() {
+        root = new TrieNode();
+    }
+
+    public void insert(String word) {
+        TrieNode cur = root;
+        for(char c:word.toCharArray()){
+            if(!cur.m.containsKey(c)){
+                cur.m.put(c,new TrieNode());
+            }
+            cur = cur.m.get(c);
+        }
+        cur.isEnd = true;
+    }
+
+    public boolean search(String word) {
+        TrieNode cur = root;
+        for(char c:word.toCharArray()){
+            if(!cur.m.containsKey(c))return false;
+            cur = cur.m.get(c);
+        }
+        return cur.isEnd;
+    }
+
+    public boolean startsWith(String prefix) {
+        TrieNode cur = root;
+        for(char c:prefix.toCharArray()){
+            if(!cur.m.containsKey(c))return false;
+            cur = cur.m.get(c);
+        }
+        return true;
+    }
+}
