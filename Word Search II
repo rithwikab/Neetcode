@@ -1,0 +1,118 @@
+/*
+Time Complexity
+
+Let:
+
+M × N = board size
+
+W = number of words
+
+L = max word length
+
+Building Trie
+
+Time: O(W × L)
+
+Space: O(W × L)
+
+DFS Search
+
+Worst case: O(M × N × 4^L)
+
+From each cell, you explore up to 4 directions for length L
+
+Space Complexity
+Auxiliary space
+
+O(L) recursion stack
+
+O(M × N) visited array
+
+Total space
+
+O(W × L + M × N + output)
+
+INTUITION
+Store all dictionary words in a Trie to share prefixes.
+Start DFS from every board cell and move in 4 directions.
+At each step:
+
+Stop if the current path doesn’t exist in the Trie
+
+Mark the cell as visited
+
+Move deeper only if the prefix is valid
+
+Whenever the current Trie node marks a word end, add it to the result.
+
+👉 Trie prunes invalid paths early, DFS explores valid ones.
+
+
+
+*/
+
+
+class TrieNode {
+    Map<Character, TrieNode> children;
+    boolean isWord;
+
+    public TrieNode() {
+        children = new HashMap<>();
+        isWord = false;
+    }
+
+    public void addWord(String word) {
+        TrieNode cur = this;
+        for (char c : word.toCharArray()) {
+            cur.children.putIfAbsent(c, new TrieNode());
+            cur = cur.children.get(c);
+        }
+        cur.isWord = true;
+    }
+}
+
+public class Solution {
+    private Set<String> res;
+    private boolean[][] visit;
+
+    public List<String> findWords(char[][] board, String[] words) {
+        TrieNode root = new TrieNode();
+        for (String word : words) {
+            root.addWord(word);
+        }
+
+        int ROWS = board.length, COLS = board[0].length;
+        res = new HashSet<>();
+        visit = new boolean[ROWS][COLS];
+
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                dfs(board, r, c, root, "");
+            }
+        }
+        return new ArrayList<>(res);
+    }
+
+    private void dfs(char[][] board, int r, int c, TrieNode node, String word) {
+        int ROWS = board.length, COLS = board[0].length;
+        if (r < 0 || c < 0 || r >= ROWS ||
+            c >= COLS || visit[r][c] ||
+            !node.children.containsKey(board[r][c])) {
+            return;
+        }
+
+        visit[r][c] = true;
+        node = node.children.get(board[r][c]);
+        word += board[r][c];
+        if (node.isWord) {
+            res.add(word);
+        }
+
+        dfs(board, r + 1, c, node, word);
+        dfs(board, r - 1, c, node, word);
+        dfs(board, r, c + 1, node, word);
+        dfs(board, r, c - 1, node, word);
+
+        visit[r][c] = false;
+    }
+}
