@@ -1,0 +1,94 @@
+/*
+Time Complexity
+
+Let:
+
+L = length of the word
+
+Σ = alphabet size (number of children, e.g. 26)
+
+addWord
+
+Time: O(L)
+
+Space: O(L) (only for new nodes)
+
+search
+
+Best case (no .): O(L)
+
+Worst case (all .): O(Σ^L)
+
+Because each . can branch into all possible children
+
+Space Complexity
+Auxiliary space (DFS stack)
+
+O(L) recursion depth
+
+Trie storage
+
+O(total characters stored)
+→ worst case O(N × L)
+
+
+Intuition
+
+Store all words in a Trie.
+While searching, move character by character:
+
+  If the character is a normal letter, follow that path.
+  
+  If the character is a ., it can match any letter, so try all children recursively.
+
+If any path successfully reaches the end of the word and lands on isEnd = true, the word exists.
+
+
+Why DFS is needed
+
+. creates multiple possible paths.
+You must branch and explore all valid children, so recursion is unavoidable.
+*/
+class TrieNode{
+    Map<Character,TrieNode> m = new HashMap<>();
+    boolean isEnd = false;
+}
+class WordDictionary {
+    TrieNode root;
+    public WordDictionary() {
+        root = new TrieNode();
+    }
+
+    public void addWord(String word) {
+        TrieNode cur = root;
+        for(char c:word.toCharArray()){
+            if(!cur.m.containsKey(c)){
+                cur.m.put(c,new TrieNode());
+            }
+            cur = cur.m.get(c);
+        }
+        cur.isEnd = true;
+    }
+
+    public boolean search(String word) {
+        return dfs(word,0,root);
+    }
+    public boolean dfs(String word,int index,TrieNode root){
+        TrieNode cur = root;
+        for(int i=index;i<word.length();i++){
+            char c = word.charAt(i);
+            if(c=='.'){
+                for(TrieNode child : cur.m.values()){
+                    if(dfs(word,i+1,child)) return true;
+                }
+                return false;
+            }
+            else{
+                if(!cur.m.containsKey(c))return false;
+                cur = cur.m.get(c);
+            }
+            
+        }
+        return cur.isEnd;
+    }
+}
