@@ -1,0 +1,64 @@
+/*
+⏱️ Time Complexity
+
+O(rows × cols)
+Each cell is visited at most once.
+
+💾 Space Complexity
+
+Auxiliary space: O(rows × cols) (DFS recursion stack worst case)
+
+Extra data structures: O(1) (in-place marking)
+
+🧠 Simple intuition
+
+Only 'O' regions connected to the border can survive.
+
+Start DFS from all border 'O's and mark them as safe ('#').
+
+Any remaining 'O' is surrounded → flip to 'X'.
+
+Convert safe marks back to 'O'.
+*/
+class Solution {
+    int rows,cols;
+    public void solve(char[][] board) {
+        rows = board.length;
+        cols = board[0].length;
+        for(int r=0;r<rows;r++){
+            if(board[r][0]=='O'){
+                dfs(board,r,0);
+            }
+            if(board[r][cols-1]=='O'){
+                dfs(board,r,cols-1);
+            }
+        }
+        for(int c=0;c<cols;c++){
+            if(board[0][c]=='O'){
+                dfs(board,0,c);
+            }
+            if(board[rows-1][c]=='O'){
+                dfs(board,rows-1,c);
+            }
+        }
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(board[i][j]=='O'){
+                    board[i][j]='X';
+                }
+                if(board[i][j]=='#'){
+                    board[i][j]='O';
+                }
+            }
+        }
+    }
+    public void dfs(char[][] board,int r,int c){
+        if(r<0 || c<0 || r>=rows || c>=cols ||
+        board[r][c]!='O')return;
+        board[r][c]='#';
+        dfs(board,r+1,c);
+        dfs(board,r-1,c);
+        dfs(board,r,c+1);
+        dfs(board,r,c-1);
+    }
+}
