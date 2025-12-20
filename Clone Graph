@@ -1,0 +1,69 @@
+/*
+⏱️ Time Complexity
+
+O(V + E)
+
+Visit each vertex once.
+
+Process each edge once.
+
+💾 Space Complexity
+
+O(V)
+
+HashMap stores one entry per node.
+
+Queue holds up to V nodes in BFS.
+
+🧠 Simple intuition
+
+Traverse the graph with BFS.
+
+For every original node, create exactly one clone.
+
+Use a map to remember which original → cloned node.
+
+While traversing, connect cloned neighbors as you go
+*/
+/*
+Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node() {
+        val = 0;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val) {
+        val = _val;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val, ArrayList<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+}
+*/
+
+class Solution {
+    public Node cloneGraph(Node node) {
+        if(node==null)return null;
+        Map<Node,Node> m = new HashMap<>();
+        Node main = new Node(node.val);
+        Queue<Node> q = new LinkedList<>();
+        q.offer(node);
+        m.put(node,main);
+        while(!q.isEmpty()){
+            Node cur = q.poll();
+            for(Node i:cur.neighbors){
+                if(!m.containsKey(i)){
+                    m.put(i,new Node(i.val));
+                    q.offer(i);
+                }
+                m.get(cur).neighbors.add(m.get(i));
+                
+            }
+        }
+        return main;
+    }
+}
