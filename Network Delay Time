@@ -1,0 +1,119 @@
+/*
+⏱️ Time Complexity (how to think about it)
+
+Each node can be pushed into the priority queue multiple times
+
+Each push/pop costs log V
+
+Every edge is relaxed once
+
+Final:
+
+Time Complexity: O((V + E) log V)
+
+Where:
+
+V = number of nodes
+
+E = number of edges
+
+🧠 Space Complexity (breakdown)
+
+Adjacency list → O(V + E)
+
+Distance array → O(V)
+
+Priority queue → O(V) (worst case)
+
+Final:
+
+Space Complexity: O(V + E)
+
+🧠 Step-by-Step Intuition
+
+Model the problem as a graph
+
+Each node = a network node
+
+Each directed edge = time to send a signal
+
+We want the shortest time from k to every node
+
+If any node is unreachable → answer is -1
+
+Use Dijkstra because
+
+Edges have weights
+
+All weights are non-negative
+
+Start from the source
+
+Distance to k = 0
+
+All others = ∞
+
+Always process the closest node first
+
+Use a min-heap (priority queue)
+
+Pop the node with smallest known time
+
+Relax neighbors
+
+If going through the current node gives a shorter time → update
+
+Finalize distances
+
+Once a node is popped from the heap, its shortest time is fixed
+
+Answer
+
+Maximum distance among all nodes
+
+If any node is still ∞, return -1
+*/
+class Solution {
+    public int networkDelayTime(int[][] times, int n, int k) {
+        // adjacency list: node -> {neighbor, weight}
+        Map<Integer, List<int[]>> graph = new HashMap<>();
+        for (int i = 1; i <= n; i++) {
+            graph.put(i, new ArrayList<>());
+        }
+
+        for (int[] t : times) {
+            graph.get(t[0]).add(new int[]{t[1], t[2]});
+        }
+
+        int[] dist = new int[n + 1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[k] = 0;
+
+        PriorityQueue<int[]> pq =
+            new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        pq.offer(new int[]{0, k});
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int time = cur[0], node = cur[1];
+
+            // skip outdated entries
+            if (time > dist[node]) continue;
+
+            for (int[] nei : graph.get(node)) {
+                int next = nei[0], w = nei[1];
+                if (dist[node] + w < dist[next]) {
+                    dist[next] = dist[node] + w;
+                    pq.offer(new int[]{dist[next], next});
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int i = 1; i <= n; i++) {
+            if (dist[i] == Integer.MAX_VALUE) return -1;
+            ans = Math.max(ans, dist[i]);
+        }
+        return ans;
+    }
+}
