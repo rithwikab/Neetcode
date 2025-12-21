@@ -1,0 +1,89 @@
+/*
+⏱️ Time Complexity
+
+O(E · α(N)) ≈ O(E)
+
+Each find is amortized almost constant
+
+Each edge is processed once
+
+α(N) (inverse Ackermann) is practically ≤ 4
+
+✔️ Optimal
+
+🧠 Space Complexity
+
+O(N)
+
+parent[] → O(N)
+
+rank[] → O(N)
+
+✔️ Optimal
+
+🧠 Core Intuition (Simple)
+
+Initially, every node is its own component
+
+For each edge (u, v):
+
+If u and v are already connected → this edge creates a cycle
+
+That edge is the redundant connection
+
+Otherwise, union their components
+
+🔁 Step-by-Step Logic
+
+Initialize each node as its own parent
+
+For each edge:
+
+Find roots of both nodes
+
+If roots match → cycle → return edge
+
+Else union them
+
+Guaranteed to find exactly one redundant edge
+*/
+class Solution {
+    int[] parent;
+    int[] rank;
+    public int[] findRedundantConnection(int[][] edges) {
+        parent = new int[edges.length+1];
+        rank = new int[edges.length+1];
+        for(int i=0;i<parent.length;i++){
+            parent[i]=i;
+            rank[i]=1;
+        }
+        for(int i=0;i<edges.length;i++){
+            if(!union(edges[i][0],edges[i][1])){
+                return new int[]{edges[i][0],edges[i][1]};
+            }
+        }
+        return new int[0];
+    }
+    public boolean union(int a,int b){
+        int p1 = find(a);
+        int p2 = find(b);
+        if(p1==p2)return false;
+        if(rank[p1]<rank[p2]){
+            parent[p1]=p2;
+            rank[p2] += rank[p1];
+        }
+        else{
+            parent[p2]=p1;
+            rank[p1]+=rank[p2];
+        }
+        return true;
+    }
+    public int find(int a){
+        int p = parent[a];
+        while(p!=parent[p]){
+            parent[p] = parent[parent[p]];
+            p = parent[p];
+        }
+        return p;
+    }
+}
