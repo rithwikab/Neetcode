@@ -1,0 +1,59 @@
+/*
+time complexity - O(m * n)
+space complexity - O(m *n)
+Where n is the number of words and m is the length of the word.
+
+🧠 Core Intuition
+Each word is a node
+
+Edge exists if words differ by one letter
+
+BFS guarantees shortest transformation
+
+Generate neighbors by changing one character at a time
+
+🔁 Step-by-Step BFS Logic
+
+Start from beginWord
+
+At each level:
+
+Change one letter in all positions
+
+Add valid unseen words to queue
+
+Each level = one transformation
+
+Stop when endWord is reached
+
+*/
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        int res = 0;
+        if(!wordList.contains(endWord) || beginWord.equals(endWord))return res;
+        Set<String> visited = new HashSet<>();
+        Queue<String> q = new LinkedList<>();
+        q.offer(beginWord);
+        visited.add(beginWord);
+        while(!q.isEmpty()){
+            res++;
+            for(int i=q.size();i>0;i--){
+                String cur = q.poll();
+                if(cur.equals(endWord))return res;
+                for(int j=0;j<cur.length();j++){
+                    char c = cur.charAt(j);
+                    for(char t='a';t<='z';t++){
+                        if(c==t)continue;
+                        String temp = cur.substring(0,j)+t+cur.substring(j+1);
+                        if(wordList.contains(temp) && !visited.contains(temp)){
+                            visited.add(temp);
+                            q.offer(temp);
+                        }
+                    }
+                }
+            }
+            
+        }
+        return 0;
+    }
+}
