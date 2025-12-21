@@ -1,0 +1,46 @@
+/*
+O(v+E) time - each node and edge visited once
+O(v+e) space = hashmap stores each node and each edge , recursion depth is max v (all nodes) , visited node has max V nodes stored
+INTUITION
+This is an undirected graph
+
+A visited neighbor is only a cycle if it’s NOT the parent
+
+So DFS must know where it came from
+*/
+class Solution {
+    Map<Integer, List<Integer>> m = new HashMap<>();
+    Set<Integer> visited = new HashSet<>();
+
+    public boolean validTree(int n, int[][] edges) {
+        // A tree with n nodes must have exactly n - 1 edges
+        if (edges.length != n - 1) return false;
+
+        for (int i = 0; i < n; i++) {
+            m.put(i, new ArrayList<>());
+        }
+
+        for (int[] e : edges) {
+            m.get(e[0]).add(e[1]);
+            m.get(e[1]).add(e[0]);
+        }
+
+        if (!dfs(0, -1)) return false;
+
+        // Must be fully connected
+        return visited.size() == n;
+    }
+
+    private boolean dfs(int node, int parent) {
+        if (visited.contains(node)) return false;
+
+        visited.add(node);
+
+        for (int nei : m.get(node)) {
+            if (nei == parent) continue; // ignore the edge back to parent
+            if (!dfs(nei, node)) return false;
+        }
+
+        return true;
+    }
+}
