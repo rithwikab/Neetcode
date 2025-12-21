@@ -1,0 +1,75 @@
+/*
+⏱️ Time Complexity
+
+O(V + E)
+
+Each node is visited once
+
+Each edge is traversed once (undirected → twice, still linear)
+
+BFS queue operations are O(1)
+🧠 Space Complexity
+
+O(V + E)
+
+Breakdown:
+
+Adjacency list: O(V + E)
+
+visited array: O(V)
+
+Queue (BFS): O(V) worst case
+🧠 Core Intuition 
+
+A connected component = all nodes reachable from a starting node
+
+Every time you start a BFS from an unvisited node, you’ve found one full component
+
+Mark everything reachable
+
+Repeat
+
+🔁 Step-by-Step Logic
+
+For each node:
+
+If already visited → skip
+
+Start BFS
+
+Visit all reachable nodes
+
+Increment component count
+*/
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        int count = 0;
+        boolean[] visited = new boolean[n];
+        Map<Integer,List<Integer>> m = new HashMap<>();
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0;i<n;i++){
+            m.put(i,new ArrayList<>());
+        }
+        for(int i=0;i<edges.length;i++){
+            m.get(edges[i][0]).add(edges[i][1]);
+            m.get(edges[i][1]).add(edges[i][0]);
+        }
+        for(int i=0;i<n;i++){
+            if(visited[i])continue;
+            q.add(i);
+            visited[i]=true;
+            while(!q.isEmpty()){
+                int cur = q.poll();
+                for(int nei:m.get(cur)){
+                    if(!visited[nei]){
+                        q.offer(nei);
+                        visited[nei]=true;
+                    }
+                }
+            }
+            count++;
+
+        }
+        return count;
+    }
+}
