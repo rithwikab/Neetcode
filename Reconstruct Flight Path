@@ -1,0 +1,75 @@
+/*
+time complexity - O(v*e)
+space complexity - O(v*e)
+
+Simple intuition
+
+We are trying to build the itinerary step by step starting from "JFK".
+
+At each airport:
+
+  We try every possible outgoing flight in lexicographic order
+  
+  Once we take a flight, we remove that ticket so it isn’t reused
+  
+  If we reach a dead end before using all tickets, we undo the choice and try another flight
+
+We keep doing this until:
+
+  Either a complete path using all tickets is formed
+  
+  Or all possibilities from the current airport fail
+
+Because the problem guarantees a valid itinerary, we eventually find one.
+*/
+class Solution {
+    public List<String> findItinerary(List<List<String>> tickets) {
+        // sort tickets for lexicographic ordering 
+        // ascending order of destinations
+        tickets.sort((a,b)->a.get(1).compareTo(b.get(1)));
+        // map for adjacency list
+        Map<String,List<String>> m = new HashMap<>();
+        for(int i=0;i<tickets.size();i++){
+            m.putIfAbsent(tickets.get(i).get(0),new ArrayList<>());
+        }
+        for(int i=0;i<tickets.size();i++){
+            m.get(tickets.get(i).get(0)).add(tickets.get(i).get(1));
+        }
+        // Result list stores nodes visited on a path
+        List<String> res = new ArrayList<>();
+        // source is always JFK
+        res.add("JFK");
+        //start dfs from "JFK" , If valid path can be formed (guaranteed here) return the result
+        if(dfs("JFK",res,m,tickets.size()+1)){
+            return res;
+        }
+        return new ArrayList<>();
+    }
+    public boolean dfs(String source,List<String> res,Map<String,List<String>> m,int target){
+        //if res has no.of edges + 1(JFK) values , then we have reached a valid path
+        if(res.size()==target){
+            return true;
+        }
+        // if res has not reached target , but the current source doesnt have neighbours , then we met dead end and no valid path can be formed
+        if(!m.containsKey(source)){
+            return false;
+        }
+        // our source has neighbours to visit , traverse each neighbour while eliminating the edge from map
+        // we eliminate node because , we dont want to visit it again
+        // as we are changing the map , we store a copy first
+        List<String> temp = new ArrayList<>(m.get(source));
+        for(int i=0;i<temp.size();i++){
+            String nei = temp.get(i);
+            res.add(nei);
+            // remove neigghbour at index i from map
+            m.get(source).remove(i);
+            // if valid path can be achieved from neighbour
+            if(dfs(nei,res,m,target)){
+                return true;
+            }
+            m.get(source).add(i,nei);
+            res.remove(res.size()-1);
+        }
+        return false;
+    }
+}
