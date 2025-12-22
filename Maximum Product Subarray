@@ -1,0 +1,62 @@
+/*
+Time Complexity: O(n)
+- Single pass through the array
+
+Space Complexity: O(1)
+- Only constant extra variables used
+
+Simple Intuition Steps
+
+At every index, ask:
+
+  What is the maximum product subarray ending here?
+  
+  What is the minimum product subarray ending here?
+
+We track minimum because:
+
+A negative number can turn it into a large positive later.
+
+For each number:
+
+  Either start fresh
+  
+  Or extend previous max
+  
+  Or extend previous min
+
+Keep updating the global maximum.
+*/
+class Solution {
+    public int maxProduct(int[] nums) {
+
+        // res stores the maximum product seen so far (global answer)
+        int res = nums[0];
+
+        // curMax -> maximum product subarray ending at current index
+        // curMin -> minimum product subarray ending at current index
+        // both are needed because negative numbers flip signs
+        int curMax = 1, curMin = 1;
+
+        for (int num : nums) {
+
+            // store previous curMax before updating
+            int temp = curMax * num;
+
+            // three choices at each index:
+            // 1. start new subarray at num
+            // 2. extend previous max product
+            // 3. extend previous min product (important for negatives)
+            curMax = Math.max(Math.max(num * curMax, num * curMin), num);
+
+            // same three choices but taking minimum
+            // use temp because curMax has already been updated
+            curMin = Math.min(Math.min(temp, num * curMin), num);
+
+            // update global maximum product
+            res = Math.max(res, curMax);
+        }
+
+        return res;
+    }
+}
