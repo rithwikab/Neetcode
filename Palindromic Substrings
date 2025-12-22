@@ -1,0 +1,40 @@
+/*
+Time Complexity
+
+Two nested loops over all (i, j) pairs
+
+Time: O(n²)
+Space Complexity
+
+DP table of size n × n
+
+Space: O(n²)
+
+Simple intuition
+
+Every palindrome is defined by:
+
+Matching start and end characters
+
+And a palindromic middle (or no middle for short substrings)
+
+We check all substrings s[i…j] and count it whenever it forms a palindrome.
+*/
+class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        int count = 0;
+        boolean dp[][] = new boolean[n][n];
+        for(int i=n-1;i>=0;i--){
+            for(int j=i;j<n;j++){
+                if(s.charAt(i)==s.charAt(j) && 
+                (j-i<=2 || dp[i+1][j-1])){
+                    dp[i][j]=true;
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+
