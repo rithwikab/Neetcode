@@ -1,0 +1,43 @@
+/*
+Time Complexity
+
+Two nested loops over n
+
+Each check is O(1)
+
+Time: O(n²)
+Space Complexity
+
+dp table of size n × n
+
+Space: O(n²)
+Simple intuition
+
+A substring is a palindrome if:
+
+Its first and last characters match, and
+
+The inside substring is also a palindrome
+(or the substring length is ≤ 3, which is automatically a palindrome if ends match)
+
+We check all substrings and remember the longest valid one.
+*/
+class Solution {
+    public String longestPalindrome(String s) {
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        int resLen = 0, resId = 0;
+        for(int i=s.length()-1;i>=0;i--){
+            for(int j=i;j<s.length();j++){
+                if(s.charAt(i)==s.charAt(j) && 
+                ((j-i)<=2 || dp[i+1][j-1])){
+                    dp[i][j]=true;
+                    if(resLen < (j-i+1)){
+                        resId = i;
+                        resLen = j-i+1;
+                    }
+                }
+            }
+        }
+        return s.substring(resId,resId+resLen);
+    }
+}
