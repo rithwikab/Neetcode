@@ -1,0 +1,48 @@
+/*
+time - O(n^2)
+space - O(n)
+
+Simple Intuition (Step-by-Step)
+
+Assume every number alone is an LIS of length 1
+
+For each index i, look at all future elements
+
+If nums[j] > nums[i], we can extend the sequence
+
+Take the best possible extension
+
+Final answer is the maximum LIS starting anywhere
+*/
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+
+        // dp[i] = length of LIS starting at index i (nums[i] must be included)
+        int[] dp = new int[nums.length];
+
+        // base case:
+        // every element alone forms an LIS of length 1
+        Arrays.fill(dp, 1);
+
+        // process from right to left
+        for (int i = nums.length - 1; i >= 0; i--) {
+
+            // try extending nums[i] with all future elements
+            for (int j = i + 1; j < nums.length; j++) {
+
+                // valid increasing condition
+                if (nums[i] < nums[j]) {
+
+                    // either keep current LIS
+                    // or extend using nums[j]
+                    dp[i] = Math.max(dp[i], 1 + dp[j]);
+                }
+            }
+        }
+
+        // LIS can start at any index
+        int ans = 0;
+        for (int len : dp) ans = Math.max(ans, len);
+        return ans;
+    }
+}
