@@ -1,0 +1,32 @@
+/*
+space complexity - O(n) for cache + O(n) for recursion stack assuming in worst case we just skip one house which would give max n/2 houses in path
+time complexity - O(n) we calculate max robbed amount for each house once
+Intuition:
+At each house, if we rob it, we must skip the adjacent house.
+So the max money at a house is its value plus the maximum money
+from the next valid non-adjacent houses.
+*/
+class Solution {
+    int[] cache;
+    public int rob(int[] nums) {
+        // cache[i] represents max amount of money 
+        //that can be stolen if this particular house is 
+        //on the path of stealing
+        cache = new int[nums.length];
+        Arrays.fill(cache,-1);
+        // we can either start from 0th or 1st index , we take max of this
+        // as there are no negative values , we need to visit max houses
+        // so we start either from 0 or 1 and not a random house in the middle
+        return Math.max(dfs(0,nums),dfs(1,nums));
+    }
+    public int dfs(int curHouse,int[] nums){
+        // if we already exceeded the number of houses,nothing to rob
+        if(curHouse >= nums.length){
+            return 0;
+        }
+        if(cache[curHouse]!=-1)return cache[curHouse];
+        // at each step we skip next house but check which of the immediate next houses will give max 
+        cache[curHouse] = nums[curHouse] + Math.max(dfs(curHouse+2,nums),dfs(curHouse+3,nums));
+        return cache[curHouse];
+    }
+}
