@@ -1,0 +1,46 @@
+/*
+Time
+
+Two linear passes → O(n)
+
+Space
+
+Only variables → O(1)
+INTUITION
+For a circular street:
+
+You must skip either the first or last house
+
+Solve both cases as normal House Robber
+
+Take the maximum
+
+For each house:
+
+Either rob it (add money from two houses ago)
+
+Or skip it (keep previous best)
+*/
+class Solution {
+    public int rob(int[] nums) {
+        if(nums.length==1)return nums[0];
+        return Math.max(dp(Arrays.copyOfRange(nums,0,nums.length-1)),dp(Arrays.copyOfRange(nums,1,nums.length)));
+    }
+    public int dp(int[] nums){
+        // rob1 -> max amount robbed upto two houses before
+        // rob2 -> max amount robbed upto previus house
+        int rob1=0,rob2=0;
+        for(int i:nums){
+            // if choosing to rob current house i, add it to rob1 (2 houses previous) only
+            int newRob = Math.max(rob1+i,rob2);
+            // now that we've chosen this index , for the next index this new value will be rob2
+            // for next index , rob1 will be the previous value of rob2
+            rob1 = rob2;
+            rob2 = newRob;
+            
+            
+        }
+        // return rob2 , this is the max value that could be robbed if last index is chosen 
+        return rob2;
+    }
+}
