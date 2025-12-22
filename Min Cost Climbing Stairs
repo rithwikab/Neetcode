@@ -1,0 +1,48 @@
+/*
+time complexity - O(n) each stair is processed once 
+space complexity - O(n) for storing cache and O(n) max recursive calls in the case we're always choosing +1 steps
+Simple intuition
+
+From any stair i, if you step on it:
+
+You pay cost[i]
+
+Then you can move to either:
+
+i + 1
+
+i + 2
+
+So the minimum cost to reach the top from stair i is:
+
+Cost at i
+
+Plus the minimum cost of the next choices
+
+We compute this once per stair and reuse it.
+*/
+class Solution {
+    int[] cache;
+    public int minCostClimbingStairs(int[] cost) {
+        // to store the minimum cost to reach end of stairs 
+        //if ith store is chosen along path
+        cache = new int[cost.length];
+        Arrays.fill(cache,-1);
+        // we can start from 0 or 1
+        return Math.min(dfs(cost,0),dfs(cost,1));
+    }
+    public int dfs(int[] cost,int stair){
+        // if we've already reached a stair above the given staircase
+        if(stair>=cost.length){
+            return 0;
+        }
+        // if value already calculated , return it
+        if(cache[stair]!=-1)return cache[stair];
+        // if not calculated
+        // the minimum cost if the path definitely passes through stair is 
+        // cost paid at stair , and the cost if stair + 1 is chosen or stair +2 is chosen
+        // since we need min cost , we take the min of our choices
+        cache[stair] = cost[stair] + Math.min(dfs(cost,stair+1),dfs(cost,stair+2));
+        return cache[stair];
+    }
+}
