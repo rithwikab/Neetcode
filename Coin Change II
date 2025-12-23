@@ -1,0 +1,37 @@
+/*
+Time & Space
+
+Time: O(n × amount)
+
+Space: O(n × amount)
+
+
+Intuition (simple)
+
+At each coin i and remaining amount j:
+
+Take the coin → reduce j by coins[i], stay at the same index (i)
+
+Skip the coin → move to next coin (i+1)
+
+Then sum the two possibilities to get total number of ways.
+dp[i][j] = number of ways to make amount j using coins[i ... end]
+
+*/
+class Solution {
+    int[][] dp;
+    public int change(int amount, int[] coins) {
+        Arrays.sort(coins);
+        dp = new int[coins.length+1][amount+1];
+        for(int i=0;i<= coins.length ; i++){
+            dp[i][0] = 1;
+        }
+        for(int i=coins.length-1;i>=0;i--){
+            for(int j=0;j<=amount;j++){
+                if(j>=coins[i])
+                dp[i][j] = dp[i][j - coins[i]] + dp[i+1][j];
+            }
+        }
+        return dp[0][amount];
+    }
+}
