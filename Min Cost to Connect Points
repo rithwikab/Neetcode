@@ -1,0 +1,109 @@
+/*
+Time & Space Complexity
+Time
+
+Building adjacency list: O(N²)
+
+Heap operations:
+
+Each edge may be pushed → O(N² log N)
+
+Total:
+👉 O(N² log N)
+
+Space
+
+Adjacency list: O(N²)
+
+Heap: O(N²) (worst case)
+
+Visited set: O(N)
+
+Total:
+👉 O(N²)
+
+1️⃣ High-level intuition
+
+Each point is a node
+
+Cost between two points = Manhattan distance
+
+You build a complete graph
+
+You want to connect all nodes with minimum total edge cost
+
+That is exactly a Minimum Spanning Tree
+
+You’re using Prim’s algorithm:
+
+Grow the MST one node at a time
+
+Always pick the cheapest edge that connects the current tree to a new node
+*/
+public class Solution {
+    public int minCostConnectPoints(int[][] points) {
+        int N = points.length;
+
+        // Adjacency list:
+        // node -> list of {edgeCost, neighborNode}
+        Map<Integer, List<int[]>> adj = new HashMap<>();
+
+        // Build complete graph (O(N^2))
+        for (int i = 0; i < N; i++) {
+            int x1 = points[i][0];
+            int y1 = points[i][1];
+            for (int j = i + 1; j < N; j++) {
+                int x2 = points[j][0];
+                int y2 = points[j][1];
+
+                // Manhattan distance
+                int dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+
+                // Undirected edge
+                adj.computeIfAbsent(i, k -> new ArrayList<>()).add(new int[]{dist, j});
+                adj.computeIfAbsent(j, k -> new ArrayList<>()).add(new int[]{dist, i});
+            }
+        }
+
+        int res = 0;
+
+        // Tracks nodes already in MST
+        Set<Integer> visit = new HashSet<>();
+
+        // Min-heap storing {edgeCost, node}
+        PriorityQueue<int[]> minH =
+            new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+
+        // Start from node 0 with cost 0
+        minH.offer(new int[]{0, 0});
+
+        // Continue until all nodes are added to MST
+        while (visit.size() < N) {
+            int[] curr = minH.poll();
+            int cost = curr[0];
+            int i = curr[1];
+
+            // Skip if already included in MST
+            if (visit.contains(i)) {
+                continue;
+            }
+
+            // Add edge cost to result
+            res += cost;
+            visit.add(i);
+
+            // Push all edges from current node
+            for (int[] nei : adj.getOrDefault(i, Collections.emptyList())) {
+                int neiCost = nei[0];
+                int neiIndex = nei[1];
+
+                // Only consider edges leading to unvisited nodes
+                if (!visit.contains(neiIndex)) {
+                    minH.offer(new int[]{neiCost, neiIndex});
+                }
+            }
+        }
+
+        return res;
+    }
+}
