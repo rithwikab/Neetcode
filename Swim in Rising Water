@@ -1,0 +1,45 @@
+/*
+time  - O(E log V) for each edge , we push a neighbour node into priority queue
+space - O(V) PRIORITY QUEUE AND VISITED
+Core Intuition (simple)
+
+Each cell has a height → water level must be at least that high to enter it.
+
+A path’s cost is the maximum height encountered on that path.
+
+We want a path from (0,0) to (n-1,n-1) where this maximum is minimized.
+
+So:
+
+Minimize the maximum value on the path.
+*/
+class Solution {
+    public int swimInWater(int[][] grid) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[0]-b[0]);
+        int n = grid.length;
+        boolean[][] visit = new boolean[n][n];
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+        pq.offer(new int[]{grid[0][0],0,0});
+        visit[0][0]=true;
+        while(!pq.isEmpty()){
+            int[] cur = pq.poll();
+            int curTime = cur[0];
+            //index we're at
+            int r = cur[1],c=cur[2];
+            if(r==n-1 && c==n-1)return curTime;
+            for(int[] dir:dirs){
+                int newR = r+dir[0];
+                int newC = c+dir[1];
+                if(newR >=0 && newC >=0 && 
+                newR<n && newC<n && !visit[newR][newC]){
+                    visit[newR][newC]=true;
+                    int newTime = Math.max(curTime,grid[newR][newC]);
+                    pq.offer(new int[]{newTime,newR,newC});
+
+                }
+            }
+        }
+        return -1;
+
+    }
+}
