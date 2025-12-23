@@ -1,0 +1,55 @@
+/*
+Time complexity
+
+O(n × 2) = O(n)
+
+Each state (index, buying) is computed once
+Space complexity (your code)
+
+O(n × 2) for memo table
+
+O(n) recursion stack
+
+Intuition (simple)
+
+On each day, you have two possible states:
+
+Can buy
+
+Must sell
+
+At every index:
+
+You can act (buy/sell)
+
+Or skip (cooldown / do nothing)
+
+You choose the option that gives maximum future profit.
+*/
+class Solution {
+    Integer[][] dp;
+    public int maxProfit(int[] prices) {
+        //dp[i][j] the max profit to be made if doing j on index i and moving forward
+        dp = new Integer[prices.length][2];
+        // 0 - buying , 1 selling
+        return dfs(0,0,prices);
+    }
+    public int dfs(int index,int buying,int[] prices){
+        if(index >= prices.length)return 0;
+        if(dp[index][buying]!=null)return dp[index][buying];
+        // choosing not to buy/sell at this index
+        int cooldown = dfs(index+1,buying,prices);
+        if(buying == 0){
+            // we will buy at this index
+            int buy = dfs(index+1,1,prices) - prices[index];
+            // max profit if we can buy at this stage is 
+            dp[index][0] = Math.max(buy,cooldown);
+        }
+        else{
+            //buying is 1 , we need to sell
+            int sell = dfs(index+2,0,prices) + prices[index];
+            dp[index][1] = Math.max(sell,cooldown);
+        }
+        return dp[index][buying];
+    }
+}
