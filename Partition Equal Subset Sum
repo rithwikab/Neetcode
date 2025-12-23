@@ -1,0 +1,51 @@
+/*
+Simple Intuition 🧠
+
+We want to check if we can pick some numbers whose sum equals half of the total sum.
+At each index, we have two choices:
+
+take the current number into our subset
+
+skip it
+
+If we ever reach the target sum, we’re done.
+Memoization ensures we don’t recompute the same (index, sum) state again.
+
+Time Complexity ⏱️
+
+O(n × target)
+Each state (curIndex, curSum) is computed once.
+
+Space Complexity 📦
+
+O(n × target) for the memo table
+
+O(n) auxiliary space for the recursion stack
+*/
+class Solution {
+    int totsum = 0;
+    int target = 0;
+    Boolean memo[][];
+    public boolean canPartition(int[] nums) {
+        for(int i:nums){
+            totsum+=i;
+        }
+        if(totsum % 2!=0)return false;
+        target = totsum/2;
+        memo = new Boolean[nums.length][target+1];
+        return dfs(nums,0,0);
+    }
+    public boolean dfs(int[] nums,int curIndex,int curSum){
+        if(curSum == target)return true;
+        if(curIndex == nums.length || curSum > target){
+            return false;
+        }
+        if(memo[curIndex][curSum] != null){
+            return memo[curIndex][curSum];
+        }
+        boolean take = dfs(nums,curIndex+1,curSum + nums[curIndex]);
+        boolean skip = dfs(nums,curIndex+1,curSum);
+        memo[curIndex][curSum] = skip||take;
+        return memo[curIndex][curSum];
+    }
+}
