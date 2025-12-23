@@ -1,0 +1,103 @@
+/*
+Time:
+
+Comparing consecutive words → O(C), where C = total characters in all words
+
+BFS topological sort → O(V + E), where V = #unique chars, E = #edges
+
+Total: O(C + V + E)
+
+Space:
+
+Adjacency list → O(E)
+
+Indegree map → O(V)
+
+Queue → O(V)
+
+Total: O(V + E)
+
+1️⃣ Intuition (step-wise)
+
+Treat each unique character as a node in a graph.
+
+Compare each pair of consecutive words:
+
+The first character that differs determines the relative ordering.
+
+Add a directed edge from the first word’s char → second word’s char.
+
+Check prefix invalidity:
+
+If word1 is longer than word2 but word2 is a prefix of word1 → impossible.
+
+Build indegree for each node (number of incoming edges).
+
+Use Kahn’s algorithm (BFS topological sort):
+
+Start with nodes with indegree 0.
+
+Pop from queue → add to result → decrement indegree of neighbors → enqueue neighbors with indegree 0.
+
+If all characters are in the result → return string.
+
+Else → cycle exists → return "".
+*/
+class Solution {
+    public String foreignDictionary(String[] words) {
+      // each unique character will be one node in the map
+      // for two consecutive word , if the characters at matching indexes differ , then an edge exists between previous char and next char
+      // we need to give topological sorting of the nodes
+      // we need adjacency list and indegree of each node
+      Map<Character,Set<Character>> m = new HashMap<>();
+      Map<Character,Integer> indegree = new HashMap<>();
+      // for each unique character create an entry in indegree and m
+      for(String w:words){
+        for(char c:w.toCharArray()){
+            m.putIfAbsent(c,new HashSet<>());
+            indegree.putIfAbsent(c,0);
+        }
+      }
+      for(int i=0;i<words.length-1;i++){
+        String w1 = words[i];
+        String w2 = words[i+1];
+        int commonLength = Math.min(w1.length(),w2.length());
+        //check for invalidity
+        // if w2 is prefix of w1 ,then w2 should be first 
+        if(w1.length() > w2.length() && w1.substring(0,commonLength).equals(w2.substring(0,commonLength))){
+            return "";
+        }
+        //if valid combination of strings , check each character to build mapping
+        for(int j=0;j<commonLength;j++){
+            if(w1.charAt(j) != w2.charAt(j)){
+                if(!m.get(w1.charAt(j)).contains(w2.charAt(j))){
+                    m.get(w1.charAt(j)).add(w2.charAt(j));
+                    indegree.put(w2.charAt(j),indegree.get(w2.charAt(j))+1);
+                }
+                break;
+            }
+            
+            
+        }
+      }
+      Queue<Character> q = new LinkedList<>();
+      for(char c:indegree.keySet()){
+        if(indegree.get(c)==0){
+            q.offer(c);
+        }
+      }
+      StringBuilder res = new StringBuilder();
+      while(!q.isEmpty()){
+        char c = q.poll();
+        res.append(c);
+        for(char nei : m.get(c)){
+            indegree.put(nei,indegree.get(nei)-1);
+            if(indegree.get(nei)==0){
+                q.offer(nei);
+            }
+        }
+      }
+      if(res.length() != indegree.size())return "";
+      return res.toString();
+    }
+}
