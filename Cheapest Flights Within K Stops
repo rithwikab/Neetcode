@@ -1,0 +1,59 @@
+/*
+Time & Space
+
+Time: O(k * E)
+
+Space: O(V)
+
+Bellman–Ford intuition steps:
+
+• Step 1: Don’t walk the graph
+  – Repeatedly try to improve distances
+
+• Step 2: One iteration = one more edge allowed
+  – i iterations → paths with at most i edges
+
+• Step 3: In each iteration, relax every edge
+  – If dist[u] is known, try to improve dist[v]
+
+• Step 4: Do NOT chain updates in the same iteration
+  – Otherwise you accidentally use multiple edges
+
+• Step 5: Clone the distance array
+  – Read from old dist, write to new temp
+
+• Step 6: Repeat limited times
+  – V−1 for general
+  – k+1 for stop-limited problems
+
+• Step 7: Final answer
+  – dist[dst] if reachable, else -1
+
+*/
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        // Relax edges k+1 times
+        for (int i = 0; i <= k; i++) {
+            int[] temp = dist.clone();
+
+            for (int[] f : flights) {
+                int u = f[0];
+                int v = f[1];
+                int w = f[2];
+
+                if (dist[u] != Integer.MAX_VALUE &&
+                    dist[u] + w < temp[v]) {
+                    temp[v] = dist[u] + w;
+                }
+            }
+            dist = temp;
+        }
+
+        return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
+    }
+}
