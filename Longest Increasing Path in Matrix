@@ -1,0 +1,53 @@
+/*
+⏱️ Time Complexity
+
+O(m × n)
+Each cell is DFS-ed once, and each edge (direction) is checked a constant number of times.
+
+🧠 Space Complexity
+
+O(m × n) for dp
+
+O(m × n) worst-case recursion stack (strictly increasing grid)
+
+🧠 Intuition (step-by-step)
+
+Treat each cell as a starting point of a path
+
+From a cell, try moving in 4 directions only to strictly larger values
+
+The longest path from a cell =
+1 (itself) + max path from any valid neighbor
+
+Use DFS + memoization so each cell’s answer is computed once
+*/
+class Solution {
+    int dp[][];
+    int maxLength = Integer.MIN_VALUE;
+    int m,n;
+    int[][] dirs = {{1,0},{0,1},{-1,0},{0,-1}};
+    public int longestIncreasingPath(int[][] matrix) {
+        m = matrix.length;
+        n = matrix[0].length;
+        dp = new int[m][n];
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                maxLength = Math.max(maxLength,dfs(matrix,i,j));
+            }
+        }
+        return maxLength;
+    }
+    public int dfs(int[][] matrix , int r , int c){
+        if(dp[r][c]!=0){
+            return dp[r][c];
+        }
+         dp[r][c] = 1;
+        for(int[] dir:dirs){
+            int newR = r + dir[0];
+            int newC = c+dir[1];
+            if(newR >= 0 && newC >=0 && newR < m && newC < n && matrix[newR][newC] > matrix[r][c])
+            dp[r][c] =Math.max(dp[r][c],1+dfs(matrix,newR,newC));
+        }
+        return dp[r][c];
+    }
+}
