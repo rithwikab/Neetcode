@@ -1,0 +1,47 @@
+/*
+⏱️ Time Complexity
+
+O(m × n)
+Every (i, j) computed once
+
+🧠 Space Complexity
+
+O(m × n) for DP table
+
+🧠 Simple intuition (steps)
+
+At (i, j), we want to match s3[i+j]
+
+If it matches s1[i], try moving in s1
+
+If it matches s2[j], try moving in s2
+
+If any path reaches (m, n), answer is true
+*/
+class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int m = s1.length();
+        int n = s2.length();
+        if(m+n != s3.length())return false;
+        boolean[][] dp = new boolean[m+1][n+1];
+        //dp[i][j] represents whether its possible to make string s3(i+j to end)
+        // from s1(i to end) and s2(j to end)
+        // base case if s1 is at end and s2 is at end , s3 would also be at end 
+        // so dp[m][n] would be true
+        dp[m][n] = true;
+        //if a chracter matches , we're going to access dp of a forward index
+        // so we need the forward values first , so reverse iterate
+        for(int i=m;i>=0;i--){
+            for(int j=n;j>=0;j--){
+                if(i<m && s1.charAt(i) == s3.charAt(i+j)){
+                    dp[i][j] = dp[i+1][j];
+                }
+                if(j<n && s2.charAt(j) == s3.charAt(i+j)){
+                    dp[i][j] |= dp[i][j+1];
+                }
+            }
+        }
+        // we want to know from s1 0 to end , s2 0 to end , can we form s3
+        return dp[0][0];
+    }
+}
