@@ -1,0 +1,42 @@
+/*
+⏱️ Time Complexity
+
+O(|s| × |t|)
+
+🧠 Space Complexity
+
+O(|s| × |t|) for DP table
+
+Can be optimized to O(|t|) using 1D DP
+
+🧠 Intuition (step-by-step)
+
+At index i in s, you always have the option to skip s[i]
+
+If s[i] == t[j], you also have the option to use it to match t[j]
+
+Total ways = ways by skipping + ways by matching
+
+Base case: once t is fully matched, there’s exactly 1 valid subsequence
+*/
+class Solution {
+    public int numDistinct(String s, String t) {
+        //dp[i][j] represents number of distinct subsequences
+        // of substring(s,i,end) equal to substring(t,j,end)
+        int dp[][] = new int[s.length()+1][t.length()+1];
+        for(int i=0;i<=s.length();i++){
+            dp[i][t.length()] = 1;
+        }
+        for(int i=s.length()-1;i>=0;i--){
+            for(int j=t.length()-1;j>=0;j--){
+                // you can skip the character
+                dp[i][j] = dp[i+1][j];
+                //choose the character if there's a match
+                if(s.charAt(i)==t.charAt(j)){
+                    dp[i][j]+=dp[i+1][j+1];
+                }
+            }
+        }
+        return dp[0][0];
+    }
+}
