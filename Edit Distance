@@ -1,0 +1,68 @@
+/*
+time - O(m*n)
+space - O(m*n) 
+m is length of word1 , n is length of word2
+Intuition
+We want the minimum number of edits needed to convert word1 into word2, where an edit can be:
+
+insert a character
+delete a character
+replace a character
+Instead of using recursion, we can solve this using bottom-up dynamic programming by building the answer for smaller suffixes first.
+
+We define a DP state that answers:
+“What is the minimum edit distance between word1[i:] and word2[j:]?”
+
+By filling a table from the end of the strings toward the beginning, every subproblem we need is already solved when we reach it.
+
+Algorithm
+Create a 2D DP table dp of size
+(len(word1) + 1) × (len(word2) + 1).
+Let dp[i][j] represent the minimum number of operations to convert
+word1[i:] into word2[j:].
+Initialize the base cases:
+If word1 is exhausted (i == len(word1)), all remaining characters of word2 must be inserted:
+dp[len(word1)][j] = len(word2) - j
+If word2 is exhausted (j == len(word2)), all remaining characters of word1 must be deleted:
+dp[i][len(word2)] = len(word1) - i
+Fill the DP table from bottom-right to top-left:
+For each position (i, j):
+If word1[i] == word2[j]:
+No operation is needed
+dp[i][j] = dp[i + 1][j + 1]
+Otherwise:
+Consider all three operations:
+Delete → dp[i + 1][j]
+Insert → dp[i][j + 1]
+Replace → dp[i + 1][j + 1]
+Take the minimum of these and add 1
+After filling the table, the answer is stored in dp[0][0]
+Return dp[0][0]
+*/
+class Solution {
+    public int minDistance(String word1, String word2) {
+        //dp[i][j] min ops to make word1(i..end) equal to word2(j..end)
+        int[][] dp = new int[word1.length()+1][word2.length()+1];
+        //if word1 ends , insert remaining chars of word2
+        for(int j=0;j<=word2.length();j++){
+            dp[word1.length()][j] = word2.length()-j;
+        }
+        //if word2 ends , delete remaining characters of word1
+        for(int i=0;i<=word1.length();i++){
+            dp[i][word2.length()] = word1.length()-i;
+        }
+        for(int i=word1.length()-1;i>=0;i--){
+            for(int j=word2.length()-1;j>=0;j--){
+                if(word1.charAt(i)==word2.charAt(j)){
+                    //move both forward
+                    dp[i][j] = dp[i+1][j+1];
+                }
+                else{
+                    dp[i][j] = 1 + Math.min(dp[i+1][j],
+                    Math.min(dp[i+1][j+1],dp[i][j+1]));
+                }
+            }
+        }
+        return dp[0][0];
+    }
+}
