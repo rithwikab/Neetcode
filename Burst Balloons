@@ -1,0 +1,89 @@
+/*
+Time & Space Complexity
+
+Time: O(n³)
+
+l, r, and i loops
+
+Space: O(n²)
+
+DP table
+
+Problem: Burst Balloons (DP on intervals)
+Core idea (key trick)
+
+Don’t think about which balloon to pop first.
+Think about which balloon is popped last in a subarray.
+
+This flips the problem from chaotic to deterministic.
+
+Why we add 1 at both ends
+newNums[0] = newNums[n+1] = 1;
+
+
+So that when the last balloon i in [l..r] is popped,
+its neighbors are fixed: l-1 and r+1.
+
+This makes the coins gained:
+
+newNums[l-1] * newNums[i] * newNums[r+1]
+
+DP Definition
+dp[l][r] = maximum coins obtainable
+           by bursting balloons from index l to r (inclusive)
+
+Transition (most important part)
+
+Pick which balloon i is burst last in [l..r]:
+
+dp[l][r] =
+max over i in [l..r] of:
+    newNums[l-1] * newNums[i] * newNums[r+1]
+  + dp[l][i-1]
+  + dp[i+1][r]
+
+
+Why this works:
+
+Left side [l..i-1] is already resolved
+
+Right side [i+1..r] is already resolved
+
+i is last → neighbors are guaranteed
+
+Loop Order (why it’s correct)
+for (l = n → 1)
+  for (r = l → n)
+    for (i = l → r)
+
+
+Smaller intervals are computed first
+
+dp[l][i-1] and dp[i+1][r] already exist when needed
+
+Classic interval DP ordering.
+*/
+class Solution {
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        int[] newNums = new int[n+2];
+        newNums[0] = newNums[n+1] = 1;
+        for(int i=0;i<n;i++){
+            newNums[i+1] = nums[i];
+        }
+        //dp[l][r] max value acheived if we pop
+        // newNums[l] last , we have l to i-1 on left
+        // we have l+1 to r on right
+        int[][] dp = new int[n+2][n+2];
+        for(int l=n;l>=1;l--){
+            for(int r = l;r<=n;r++){
+                for(int i=l;i<=r;i++){
+                    int coins = newNums[l-1]*newNums[i]*newNums[r+1];
+                    coins += dp[l][i - 1] + dp[i + 1][r];
+                    dp[l][r] = Math.max(dp[l][r], coins);
+                }
+            }
+        }
+        return dp[1][n];
+    }
+}
