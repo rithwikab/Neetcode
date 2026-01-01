@@ -1,0 +1,35 @@
+/*
+Time & Space
+
+Time: O(n) (each index processed once)
+
+Space: O(1)
+INTUITION
+It groups positions by number of jumps taken
+
+For each group, it asks:
+
+“From anywhere here, how far could my next jump go?”
+
+That farthest reach becomes the next group
+
+Repeat until the end is covered
+
+Each group = one jump.
+*/
+class Solution {
+    public int jump(int[] nums) {
+        int l=0,r=0,ans = 0;
+        while(r<nums.length-1){
+            int farthest = 0;
+            for(int i=l;i<=r;i++){
+                farthest = Math.max(farthest,i+nums[i]);
+            }
+            l = r+1;
+            r = farthest;
+            ans++;
+        }
+        return ans;
+
+    }
+}
