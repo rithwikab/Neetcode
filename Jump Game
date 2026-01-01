@@ -1,0 +1,26 @@
+/*
+Time & Space
+
+Time: O(n)
+
+Space: O(1)
+INTUITION
+Start with goal = last index
+
+Traverse array from right to left
+
+If i + nums[i] >= goal, update goal = i
+
+At end, check if goal == 0
+*/
+class Solution {
+    public boolean canJump(int[] nums) {
+        int goal = nums.length - 1;
+        for(int i=nums.length-2;i>=0;i--){
+            if(i+nums[i] >= goal){
+                goal = i;
+            }
+        }
+        return goal==0;
+    }
+}
