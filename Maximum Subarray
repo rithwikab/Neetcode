@@ -1,0 +1,39 @@
+/*
+Time & Space
+
+Time: O(n)
+
+Space: O(1)
+
+State meaning
+
+curSum → best subarray sum ending at current index
+
+maxSum → best subarray sum seen so far
+
+INTUITION
+
+Start curSum = 0, maxSum = nums[0]
+
+If curSum < 0, drop it (it only hurts future sums)
+
+Add current number to curSum
+
+Update maxSum with best so far
+
+Return maxSum
+*/
+class Solution {
+    public int maxSubArray(int[] nums) {
+        
+        int curSum = 0;
+        int maxSum = nums[0];
+        for(int n:nums){
+            //start new array if current sum is negative
+            curSum = Math.max(curSum,0);
+            curSum+=n;
+            maxSum = Math.max(curSum,maxSum);
+        }
+        return maxSum;
+    }
+}
