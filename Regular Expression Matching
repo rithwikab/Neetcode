@@ -1,0 +1,53 @@
+/*
+Time & Space
+
+States: (n+1) * (m+1)
+
+Time: O(n*m)
+
+Space: O(n*m) + recursion stack
+
+INTUITION
+State: dp[sid][pid] = can s[sid…] match p[pid…]
+
+Base: if pid == m → return sid == n
+
+Memo: if already computed → reuse
+
+Match: chars match if same or pattern has .
+
+Star case (*):
+→ skip x* or consume one char and stay
+
+Normal case:
+→ must match and move both pointers
+
+DP size: n+1 , m+1 because empty string/pattern is a valid state
+*/
+class Solution {
+    Boolean[][] dp;
+    int n,m;
+    public boolean isMatch(String s, String p) {
+        n = s.length();
+        m = p.length();
+        dp = new Boolean[n+1][m+1];
+        return helper(s,p,0,0);
+          
+    }
+    public boolean helper(String s, String p, int sid , int pid){
+        if(pid == m ){
+            return sid == n;
+        }
+        if(dp[sid][pid]!=null)return dp[sid][pid];
+        boolean match = (sid < n && (s.charAt(sid) == p.charAt(pid)|| p.charAt(pid)== '.'));
+        if(pid+1<m && p.charAt(pid+1)=='*'){
+            // char at pid repeats either 0 times or multiple times
+            dp[sid][pid] = helper(s,p,sid,pid+2) || (match && helper(s,p,sid+1,pid));
+        }
+        else{
+            //normal course without *
+            dp[sid][pid] = match && helper(s,p,sid+1,pid+1);
+        }
+        return dp[sid][pid];
+    }
+}
