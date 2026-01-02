@@ -1,0 +1,51 @@
+/*
+🔹 Time Complexity
+
+O(n log n)
+Sorting dominates.
+
+🔹 Space Complexity
+
+O(1)
+Only constant extra variables (excluding sort).
+
+🔹 Intuition (step-by-step)
+
+Sort intervals by start time.
+
+Keep end = the end of the last kept interval.
+
+Traverse from the second interval onward:
+
+If interval[i] overlaps with the previous one (start < end):
+
+One interval must be removed
+
+Greedily keep the interval with the smaller end
+
+Increment removal count
+
+If there is no overlap:
+
+Keep the interval and update end
+
+Continue until all intervals are processed.
+*/
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        Arrays.sort(intervals,(a,b)->a[0]-b[0]);
+        int count = 0;
+        int end = intervals[0][1];
+        for(int i=1;i<intervals.length;i++){
+            if(intervals[i][0] < end ){
+                count++;
+                end = Math.min(end,intervals[i][1]);
+            }
+            else{
+                end = intervals[i][1];
+            }
+            
+        }
+        return count;
+    }
+}
