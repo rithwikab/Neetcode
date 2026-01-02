@@ -1,0 +1,63 @@
+/*
+🔹 Time Complexity
+
+O(n)
+Single pass through the string.
+
+🔹 Space Complexity
+
+O(1)
+Only two integers.
+
+🔹 Intuition (step-by-step)
+
+min = minimum possible number of open parentheses so far
+
+max = maximum possible number of open parentheses so far
+
+Scan the string left to right:
+
+'(' → must open → min++, max++
+
+')' → must close → min--, max--
+
+'*' → can be '(', ')', or empty
+→ min--, max++
+
+If max < 0 at any point:
+
+Too many closing parentheses → impossible
+
+If min < 0, clamp it to 0:
+
+We can treat extra closings as matched by '*'
+
+At the end:
+
+If min == 0, a valid assignment exists
+
+*/
+class Solution {
+    public boolean checkValidString(String s) {
+        int min = 0;
+        int max = 0;
+        for(int i=0;i<s.length();i++){
+            char c = s.charAt(i);
+            if(c == '('){
+                min++;
+                max++;
+            }
+            else if(c==')'){
+                min--;
+                max--;
+            }
+            else{
+                min--;
+                max++;
+            }
+            if(max<0)return false;
+            if(min<0) min = 0;
+        }
+        return min==0?true:false;
+    }
+}
