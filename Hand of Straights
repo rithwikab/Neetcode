@@ -1,0 +1,53 @@
+/*
+🔹 Intuition (step-by-step)
+
+If total cards isn’t divisible by groupSize, grouping is impossible.
+
+Sort the hand so we always process smallest values first.
+
+Use a frequency map to track unused cards.
+
+When we see a card num that still has count:
+
+It must start a group (no smaller card can absorb it).
+
+Try to build a consecutive group:
+
+Consume one card from num, num+1, ..., num+groupSize-1
+
+If any card is missing → impossible.
+
+Each card is used exactly once.
+
+
+
+🔹 Time Complexity
+
+O(n log n) due to sorting
+
+Greedy grouping itself is O(n) (each card is consumed once)
+
+🔹 Space Complexity
+
+O(n) for the frequency map
+
+
+*/
+class Solution {
+    public boolean isNStraightHand(int[] hand, int groupSize) {
+        if(hand.length % groupSize !=0 )return false;
+        Arrays.sort(hand);
+        Map<Integer,Integer> count = new HashMap<>();
+        for(int i:hand){
+            count.put(i,count.getOrDefault(i,0)+1);
+        }
+        for(int i:hand){
+            if(count.get(i)==0)continue;
+            for(int j=i;j<i+groupSize;j++){
+                if(count.getOrDefault(j,0) == 0)return false;
+                count.put(j,count.get(j)-1);
+            }
+        }
+        return true;
+    }
+}
