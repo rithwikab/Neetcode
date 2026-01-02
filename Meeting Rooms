@@ -1,0 +1,50 @@
+/*
+🔹 Time Complexity
+
+O(n log n) due to sorting.
+
+🔹 Space Complexity
+
+O(1) extra space (sorting aside).
+
+🔹 Intuition (step-by-step)
+
+If two meetings overlap, you cannot attend both.
+
+Sort meetings by start time.
+
+Track prevEnd = end time of the last meeting.
+
+For each meeting:
+
+If its start is before prevEnd, there is an overlap → impossible.
+
+Otherwise, update prevEnd to this meeting’s end.
+
+If no overlaps are found, all meetings are attendable.
+*/
+
+/**
+ * Definition of Interval:
+ * public class Interval {
+ *     public int start, end;
+ *     public Interval(int start, int end) {
+ *         this.start = start;
+ *         this.end = end;
+ *     }
+ * }
+ */
+
+class Solution {
+    public boolean canAttendMeetings(List<Interval> intervals) {
+        Collections.sort(intervals , (a,b) -> a.start - b.start);
+        int prevEnd = 0;
+        for(int i=0;i<intervals.size();i++){
+            if(intervals.get(i).start < prevEnd ){
+                return false;
+            }
+            prevEnd = intervals.get(i).end;
+        }
+        return true;
+    }
+}
