@@ -1,0 +1,54 @@
+/*
+🔹 Time Complexity
+
+O(n)
+Single pass over the intervals.
+
+🔹 Space Complexity
+
+O(n)
+Output list (required by problem).
+
+🔹 Intuition (step-by-step)
+
+Intervals are already sorted and non-overlapping.
+
+Walk through intervals one by one while tracking newInterval.
+
+Three cases for the current interval cur:
+
+No overlap, cur is before newInterval
+→ add cur directly.
+
+No overlap, cur is after newInterval
+→ add newInterval, then cur, and mark newInterval as placed.
+
+Overlap exists
+→ merge cur into newInterval by expanding its boundaries.
+
+After the loop, if newInterval hasn’t been placed yet, add it.
+
+Result remains sorted and non-overlapping.
+*/
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        List<int[]> res = new ArrayList<>();
+        for(int[] cur :intervals){
+            if(newInterval == null || cur[1]< newInterval[0]){
+                res.add(cur);
+            }
+            else if(cur[0] > newInterval[1]){
+                res.add(newInterval);
+                res.add(cur);
+                newInterval = null;
+            }
+            else{
+                newInterval[0] = Math.min(cur[0],newInterval[0]);
+                newInterval[1] = Math.max(cur[1],newInterval[1]);
+            }
+            
+        }
+        if(newInterval !=null )res.add(newInterval);
+            return res.toArray(new int[res.size()][]);
+    }
+}
