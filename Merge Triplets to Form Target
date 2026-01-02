@@ -1,0 +1,52 @@
+/*
+🔹 Time Complexity
+
+O(n)
+Each triplet is processed once.
+
+🔹 Space Complexity
+
+O(1)
+Only 3 booleans (constant space).
+
+🔹 Intuition (step-by-step)
+
+We want to form target = [a, b, c] by merging triplets.
+
+When merging, each dimension takes the maximum value seen so far.
+
+So:
+
+Any triplet that exceeds the target in any dimension is useless → discard it.
+
+Among valid triplets:
+
+We only care if some triplet provides exactly target[i] for each dimension i.
+
+If we can find:
+
+one triplet matching target[0]
+
+one triplet matching target[1]
+
+one triplet matching target[2]
+
+Then merging them will produce the target.
+*/
+class Solution {
+    public boolean mergeTriplets(int[][] triplets, int[] target) {
+        Set<Integer> s = new HashSet<>();
+        for(int t[]:triplets){
+            if(t[0] > target[0] || t[1] > target[1] || t[2] > target[2]){
+                continue;
+            }
+            for(int i=0;i<3;i++){
+                if(t[i]==target[i]){
+                    s.add(i);
+                }
+            }
+        }
+        return s.size()==3;
+    }
+}
+
