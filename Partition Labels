@@ -1,0 +1,48 @@
+/*
+🔹 Time Complexity
+
+O(n)
+Single pass over the string (hash map lookup is O(1)).
+
+🔹 Space Complexity
+
+O(1)
+At most 26 characters stored (constant).
+🔹 Intuition (step-by-step)
+
+For each character, record its last occurrence index.
+
+Scan the string from left to right.
+
+curEnd = the farthest last index of any character seen so far.
+
+Keep expanding the current partition while i < curEnd.
+
+When i == curEnd:
+
+  All characters in this partition end here
+  
+  We can safely cut the partition.
+
+Reset size and continue.
+*/
+class Solution {
+    public List<Integer> partitionLabels(String s) {
+        Map<Character,Integer> m = new HashMap<>();
+        for(char c:s.toCharArray()){
+            m.put(c,s.lastIndexOf(c));
+        }
+        int curSize = 0;
+        int curEnd = 0;
+        List<Integer> res = new ArrayList<>();
+        for(int i=0;i<s.length();i++){
+            curSize++;
+            curEnd = Math.max(curEnd,m.get(s.charAt(i)));
+            if(i==curEnd){
+                res.add(curSize);
+                curSize = 0;
+            }
+        }
+        return res;
+    }
+}
