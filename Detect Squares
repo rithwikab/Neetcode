@@ -1,0 +1,62 @@
+/*
+Time & space (quick)
+
+add: O(1)
+
+count: O(n)
+
+space: O(n)
+
+Simple intuition
+
+Fix the query point as one corner of a square
+
+Any valid square must have its diagonal opposite corner at the same distance in x and y
+
+Once the diagonal is fixed, the other two corners are forced
+
+Count how many times those two forced points exist
+
+Multiply their frequencies and add to the answer
+
+
+
+*/
+
+class CountSquares {
+
+    private Map<String, Integer> countPoints;
+    private List<int[]> pts;
+
+    public CountSquares() {
+        countPoints = new HashMap<>();
+        pts = new ArrayList<>();
+    }
+    
+    public void add(int[] point) {
+        int x = point[0], y = point[1];
+        String key = x + "," + y;
+        countPoints.put(key, countPoints.getOrDefault(key, 0) + 1);
+        pts.add(new int[]{x, y});
+    }
+    
+    public int count(int[] point) {
+        int res = 0;
+        int px = point[0], py = point[1];
+
+        for (int[] pt : pts) {
+            int x = pt[0], y = pt[1];
+
+            // must form diagonal
+            if (Math.abs(px - x) != Math.abs(py - y) || x == px || y == py)
+                continue;
+
+            String key1 = x + "," + py;
+            String key2 = px + "," + y;
+
+            res += countPoints.getOrDefault(key1, 0)
+                 * countPoints.getOrDefault(key2, 0);
+        }
+        return res;
+    }
+}
