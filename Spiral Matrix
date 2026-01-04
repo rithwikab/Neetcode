@@ -1,0 +1,54 @@
+/*
+Time & Space
+
+Time: O(n * m)
+
+Space: O(1) extra (output doesn’t count)
+
+Core invariant
+
+At every step:
+
+top..bottom and left..right describe the unvisited rectangle
+
+We traverse one full edge, then shrink that boundary
+
+No backtracking of indices needed
+*/
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<>();
+        int n = matrix.length, m = matrix[0].length;
+
+        int top = 0, bottom = n - 1;
+        int left = 0, right = m - 1;
+
+        while (top <= bottom && left <= right) {
+
+            // move right
+            for (int j = left; j <= right; j++)
+                res.add(matrix[top][j]);
+            top++;
+
+            // move down
+            for (int i = top; i <= bottom; i++)
+                res.add(matrix[i][right]);
+            right--;
+
+            if (top <= bottom) {
+                // move left
+                for (int j = right; j >= left; j--)
+                    res.add(matrix[bottom][j]);
+                bottom--;
+            }
+
+            if (left <= right) {
+                // move up
+                for (int i = bottom; i >= top; i--)
+                    res.add(matrix[i][left]);
+                left++;
+            }
+        }
+        return res;
+    }
+}
