@@ -1,0 +1,41 @@
+/*
+Mental trigger
+
+“Range with one missing value → XOR indices and elements.”
+
+Time complexity
+
+O(n)
+
+Space complexity
+
+O(1)
+
+Simple intuition
+
+Numbers should be 0..n, but one is missing
+
+XOR has the canceling property: a ^ a = 0
+
+XOR all:
+
+every index i
+
+every value nums[i]
+
+All matching pairs cancel out
+
+The only number that doesn’t get canceled is the missing one
+
+Starting with val = n accounts for the last number (n) which has no index.
+*/
+class Solution {
+    public int missingNumber(int[] nums) {
+        int n = nums.length;
+        int val = n;
+        for(int i=0;i<n;i++){
+            val ^= i ^ nums[i];
+        }
+        return val;
+    }
+}
