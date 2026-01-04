@@ -1,0 +1,35 @@
+/*
+Mental trigger
+
+“Bit reversal → mirror bit positions across the center.”
+
+Time complexity
+
+O(32) → constant time
+
+Space complexity
+
+O(1)
+
+Simple intuition
+
+A 32-bit number has fixed positions: 0 … 31
+
+Take the bit at position i
+
+Place it at position 31 − i
+
+Do this for all 32 bits
+
+That’s all reversal means.
+*/
+class Solution {
+    public int reverseBits(int n) {
+        int res = 0;
+        for(int i=0;i<32;i++){
+            int bit = (n>>i) & 1;
+            res+= (bit<< (31-i));
+        }
+        return res;
+    }
+}
