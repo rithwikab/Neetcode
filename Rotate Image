@@ -1,0 +1,35 @@
+/*
+⏱️ Time complexity
+
+O(n²) — every cell is touched once
+
+🧠 Space complexity
+
+O(1) — rotation is done in place
+🧠 Simple steps intuition
+
+Flip the matrix vertically (top row ↔ bottom row)
+
+Transpose it (swap matrix[i][j] with matrix[j][i])
+
+After these two steps, the matrix becomes 90° clockwise rotated.
+*/
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+       //reverse rows of matrix
+       for(int i=0;i<n/2;i++){
+            int[] temp = matrix[i];
+            matrix[i] = matrix[n-1-i];
+            matrix[n-1-i] = temp;
+       }
+       //transpose matrix
+       for(int i=0;i<n;i++){
+        for(int j=0;j<i;j++){
+            int temp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = temp;
+        }
+       }
+    }
+}
