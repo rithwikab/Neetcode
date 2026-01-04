@@ -1,0 +1,36 @@
+/*
+Time complexity
+
+O(number of 1 bits)
+
+Worst case: O(32) → constant time
+
+Space complexity
+
+O(1)
+
+Simple intuition
+
+Binary subtraction flips the lowest 1 bit
+
+ANDing with the original number deletes that bit
+
+Each loop removes one 1
+
+Count how many times we can do that
+*/
+class Solution {
+    public int hammingWeight(int n) {
+        int res = 0;
+       // n - 1 flips the rightmost set (1) bit to 0
+      // and turns all bits to the right of it into 1s
+      // ANDing with n clears that rightmost 1 bit
+      // each iteration removes exactly one set bit
+
+        while(n!=0){
+            n &= n-1;
+            res++;
+        }
+        return res;
+    }
+}
