@@ -1,0 +1,48 @@
+/*
+Simple intuition
+
+The number is reversed digit by digit:
+
+Get last digit: digit = x % 10
+
+Remove last digit: x /= 10
+
+Append to result: res = res * 10 + digit
+
+Overflow check:
+
+Before multiplying or adding, ensure res stays within 32-bit signed int range
+
+Return 0 if it overflows
+
+
+Time complexity
+
+O(log₁₀(|x|)) → proportional to number of digits in x
+
+Space complexity
+
+O(1) → only a few integers (res, digit)
+
+*/
+class Solution {
+    public int reverse(int x) {
+        int res = 0;
+        int min = Integer.MIN_VALUE;
+        int max = Integer.MAX_VALUE;
+
+        while(x!=0){
+            int digit = x%10;
+            x/=10;
+            
+            if(res > max/10 || (res == max/10 && digit>max % 10))
+            return 0;
+            if(res < min/10 || (res == min/10 && digit < min % 10))
+            return 0;
+
+            res*=10;
+            res+=digit;
+        }
+        return res;
+    }
+}
