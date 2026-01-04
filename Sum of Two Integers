@@ -1,0 +1,78 @@
+/*
+Simple intuition
+
+Addition of two bits:
+
+Sum bit = a_bit ^ b_bit ^ carry
+
+Carry = 1 if at least two of the three bits are 1
+
+Build result bit by bit from least significant bit (LSB) to most significant (MSB).
+
+After 32 bits, check the sign bit:
+
+If set → result is negative → convert to proper two’s complement.
+
+
+Time complexity
+
+O(32) = O(1) → fixed 32-bit integer
+
+Space complexity
+
+O(1) → only a few ints (res, carry, a_bit, b_bit)
+
+Step-by-step mental model
+
+Loop 32 times: process each bit of a and b
+
+XOR handles sum, AND/logic handles carry
+
+Shift bits into place using res |= (cur << i)
+
+At the end:
+
+If MSB (sign bit) is 1, convert raw 32-bit pattern to negative using two’s complement:
+
+res = ~res + 1;
+
+Why XOR for sum, not OR
+
+XOR = “1 if odd number of bits 1” → matches binary sum
+
+OR = “1 if at least 1 bit 1” → would overcount sum, break addition
+
+Mask / negative conversion
+if(res > 0x7FFFFFFF){
+    res = ~res + 1; // convert to negative two's complement
+}
+
+
+0x7FFFFFFF → largest positive int
+
+If res exceeds this, sign bit is 1 → interpret correctly as negative
+
+Mental trigger
+
+“Bitwise addition = XOR for sum, AND/logic for carry, handle sign at the end.”
+*/
+class Solution {
+    public int getSum(int a, int b) {
+        int carry = 0 , res = 0;
+        int mask = 0xFFFFFFFF;
+        for(int i=0;i<32;i++){
+            int a_bit = (a>>i) & 1;
+            int b_bit = (b>>i) & 1;
+            int cur = a_bit ^ b_bit ^ carry;
+            carry = (a_bit + b_bit + carry) >=2 ?1:0;
+            if(cur !=0){
+                res|= (1<<i);
+            }
+        }
+        if(res > 0x7FFFFFFF){
+            res = ~ (res);
+            res += 1;
+        }
+        return res;
+    }
+}
