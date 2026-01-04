@@ -1,0 +1,54 @@
+/*
+Time complexity
+
+O(log n) per transformation (number of digits)
+
+Total steps are bounded (values quickly fall below 1000)
+
+So overall: O(log n)
+
+Space complexity
+
+O(log n)
+Because the set stores only a small, bounded number of intermediate values
+
+Simple intuition
+
+Replace the number with sum of squares of its digits
+
+If it ever becomes 1 → happy number
+
+Otherwise, the process must eventually loop
+
+If we see the same number again, we’re stuck in a cycle → not happy
+
+The set exists only to catch that loop
+
+That’s the whole idea.
+*/
+class Solution {
+    public boolean isHappy(int n) {
+        int num = n;
+        
+        Set<Integer> s = new HashSet<>();
+        while(true){
+            int sum = 0;
+            while(num!=0){
+            int dig = (num%10);
+            sum+= (dig*dig);
+            num/=10;
+            }  
+            if(sum==1)break;
+            if(s.contains(sum)){
+                return false;
+            }
+            else{
+                s.add(sum);
+            }
+            
+            num = sum;
+        }
+        
+        return true;
+    }
+}
