@@ -1,0 +1,55 @@
+/*
+Bitwise facts you rely on
+
+a ^ a = 0
+
+a ^ 0 = a
+
+XOR is commutative and associative
+
+Time complexity
+
+O(n)
+
+Space complexity
+
+O(1)
+
+Dry run example
+Input
+nums = [4, 1, 2, 1, 2]
+
+Step-by-step
+Step	i	val before	val after (val ^ i)
+1	4	0	4
+2	1	4	5
+3	2	5	7
+4	1	7	6
+5	2	6	4
+Final result
+4
+
+
+All duplicates canceled each other.
+
+Simple intuition
+
+XOR of a number with itself is 0
+
+XOR of a number with 0 is the number
+
+Order doesn’t matter (commutative & associative)
+
+All paired numbers cancel out
+
+The number that appears once remains
+*/
+class Solution {
+    public int singleNumber(int[] nums) {
+        int val = 0;
+        for(int i:nums){
+            val ^= i;
+        }
+        return val;
+    }
+}
