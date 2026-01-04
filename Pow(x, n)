@@ -1,0 +1,49 @@
+/*
+Time complexity
+
+O(log |n|)
+One loop iteration per binary digit of n
+
+Space complexity
+
+O(1)
+Only constant extra variables used
+
+Simple intuition
+
+Writing n in binary lets us build xⁿ using squaring
+
+If the current bit of n is 1, multiply the result by current x
+
+Square x each step and shift n right
+
+Negative powers → compute normally, then take reciprocal
+
+Convert n to long to avoid overflow (Integer.MIN_VALUE)
+
+Why each line matters (quick sanity)
+
+power & 1 → checks if the current bit contributes
+
+x *= x → move to the next power of two
+
+power >>= 1 → consume one bit
+
+long power → prevents overflow when n = -2³¹
+*/
+class Solution {
+    public double myPow(double x, int n) {
+        if(x==0)return 0;
+        if(n==0)return 1;
+        double res = 1;
+        long power = Math.abs((long)n);
+        while(power > 0){
+            if((power & 1) == 1){
+                res *= x;
+            }
+            x*=x;
+            power >>= 1;
+        }
+        return n>=0 ? res:(1/res);
+    }
+}
