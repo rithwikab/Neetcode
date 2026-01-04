@@ -1,0 +1,57 @@
+/*
+Time complexity
+
+O(n × m)
+Every digit in num1 multiplies with every digit in num2
+
+Space complexity
+
+O(n + m)
+Result array of maximum possible length
+
+
+Simple intuition
+
+You can’t convert strings to numbers → they may be too large
+
+Multiply each digit of num1 with each digit of num2
+
+Each multiplication contributes to a fixed position in the result array
+
+Store the product and handle carry immediately
+
+Finally, skip leading zeros and build the string
+
+Think of the int[] as the paper where you write intermediate sums.
+
+Why i + j + 1
+
+The last digits multiply into the last position
+
+Carry flows one position left
+
+This exactly matches manual multiplication alignment
+*/
+class Solution {
+    public String multiply(String num1, String num2) {
+        if(num1.equals("0") || num2.equals("0"))return "0";
+        int n = num1.length();
+        int m = num2.length();
+        int[] res = new int[m+n];
+        for(int i=n-1;i>=0;i--){
+            for(int j=m-1;j>=0;j--){
+                int a = num1.charAt(i)-'0';
+                int b = num2.charAt(j)-'0';
+                int val = (a*b);
+                int sum = val + res[i+j+1];
+                res[i+j+1] = sum%10;
+                res[i+j] += sum/10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int x:res){
+            if(!(sb.length()==0 && x==0))sb.append(x);
+        }
+        return sb.toString();
+    }
+}
